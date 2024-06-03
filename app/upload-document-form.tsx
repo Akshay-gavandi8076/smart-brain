@@ -23,7 +23,7 @@ import { Id } from '@/convex/_generated/dataModel'
 
 const formSchema = z.object({
   title: z.string().min(2).max(250),
-  file: z.instanceof(File),
+  file: z.custom<File>((file) => file instanceof File),
 })
 
 export default function UploadDocumentForm({
@@ -92,7 +92,7 @@ export default function UploadDocumentForm({
                 <Input
                   {...fieldProps}
                   type='file'
-                  accept='.txt,.xml,.doc,.pdf'
+                  accept='.txt,.xml,.doc'
                   onChange={(event) => {
                     const file = event.target.files?.[0]
                     onChange(file)
