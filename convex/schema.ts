@@ -10,8 +10,14 @@ export default defineSchema({
   }).index('by_tokenIdentifier', ['tokenIdentifier']),
   notes: defineTable({
     text: v.string(),
+    // embedding: v.array(v.float64()),
     tokenIdentifier: v.string(),
   }).index('by_tokenIdentifier', ['tokenIdentifier']),
+  // .vectorIndex('by_embedding', {
+  //   vectorField: 'embedding',
+  //   dimensions: 1536,
+  //   filterFields: ['tokenIdentifier'],
+  // }),
   chats: defineTable({
     documentId: v.id('documents'),
     tokenIdentifier: v.string(),

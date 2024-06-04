@@ -6,5 +6,5 @@ import { api } from '@/convex/_generated/api'
 import Link from 'next/link'
 
 export default function NotesPage() {
-  return <div>Please select a note</div>
+  return <div className='text-2xl font-bold'>Please select a note</div>
 }
