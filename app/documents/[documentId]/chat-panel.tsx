@@ -1,48 +1,43 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { api } from '@/convex/_generated/api'
 import { Id } from '@/convex/_generated/dataModel'
-import { useAction } from 'convex/react'
+import { cn } from '@/lib/utils'
+import { useQuery } from 'convex/react'
+import { QuestionForm } from './question-form'
 
 export default function ChatPanel({
   documentId,
 }: {
   documentId: Id<'documents'>
 }) {
-  const askQuestion = useAction(api.documents.askQuestion)
+  const chats = useQuery(api.chats.getChatsForDocument, { documentId })
 
   return (
-    <div className='w-[300px] bg-gray-900 flex flex-col justify-between gap-2 p-4'>
-      <div className='w-[350] overflow-y-auto'>
-        <div className='bg-gray-800'>Heloo</div>
-        <div className='bg-gray-800'>world</div>
-        <div className='bg-gray-800'>world</div>
-        <div className='bg-gray-800'>world</div>
-        <div className='bg-gray-800'>world</div>
-        <div className='bg-gray-800'>world</div>
-        <div className='bg-gray-800'>skjldbksd sdfsdfsdf sdfsdffsdfs</div>
-        <div className='bg-gray-800'>world</div>
+    <div className='bg-gray-900 flex flex-col gap-2 p-4 rounded-xl'>
+      <div className='h-[350px] overflow-y-auto space-y-2'>
+        <div className='bg-slate-950 rounded p-2'>
+          AI: Ask any questions using AI about this document below:
+        </div>
+
+        {chats?.map((chat) => (
+          // eslint-disable-next-line react/jsx-key
+          <div
+            className={cn(
+              {
+                'bg-slate-600': chat.isHuman,
+                'bg-slate-950': !chat.isHuman,
+                'text-right': chat.isHuman,
+              },
+              'rounded p-4 whitespace-pre-line'
+            )}
+          >
+            {chat.isHuman ? 'YOU' : 'AI'}: {chat.text}
+          </div>
+        ))}
       </div>
       <div className='flex gap-1'>
-        <form
-          onSubmit={async (event) => {
-            event.preventDefault()
-
-            const form = event.target as HTMLFormElement
-            const formData = new FormData(form)
-            const text = formData.get('text') as string
-
-            await askQuestion({ question: text, documentId }).then(console.log)
-          }}
-        >
-          <Input
-            required
-            name='text'
-          />
-          <Button>Submit</Button>
-        </form>
+        <QuestionForm documentId={documentId} />
       </div>
     </div>
   )

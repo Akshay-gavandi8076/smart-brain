@@ -1,10 +1,50 @@
-import { action, mutation, query } from './_generated/server'
+import {
+  MutationCtx,
+  QueryCtx,
+  action,
+  internalQuery,
+  mutation,
+  query,
+} from './_generated/server'
 import { ConvexError, v } from 'convex/values'
-import { api } from './_generated/api'
+import { api, internal } from './_generated/api'
 import OpenAI from 'openai'
+import { Id } from './_generated/dataModel'
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
+})
+
+export async function hasAccessToDocument(
+  ctx: MutationCtx | QueryCtx,
+  documentId: Id<'documents'>
+) {
+  const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier
+
+  if (!userId) {
+    return null
+  }
+
+  const document = await ctx.db.get(documentId)
+
+  if (!document) {
+    return null
+  }
+
+  if (document?.tokenIdentifier !== userId) {
+    return null
+  }
+
+  return { document, userId }
+}
+
+export const hasAccessToDocumentQuery = internalQuery({
+  args: {
+    documentId: v.id('documents'),
+  },
+  async handler(ctx, args) {
+    return await hasAccessToDocument(ctx, args.documentId)
+  },
 })
 
 export const generateUploadUrl = mutation(async (ctx) => {
@@ -31,25 +71,15 @@ export const getDocument = query({
     documentId: v.id('documents'),
   },
   async handler(ctx, args) {
-    const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier
+    const accessObj = await hasAccessToDocument(ctx, args.documentId)
 
-    if (!userId) {
-      return null
-    }
-
-    const document = await ctx.db.get(args.documentId)
-
-    if (!document) {
-      return null
-    }
-
-    if (document?.tokenIdentifier !== userId) {
+    if (!accessObj) {
       return null
     }
 
     return {
-      ...document,
-      documentUrl: await ctx.storage.getUrl(document.fileId),
+      ...accessObj.document,
+      documentUrl: await ctx.storage.getUrl(accessObj.document.fileId),
     }
   },
 })
@@ -79,21 +109,18 @@ export const askQuestion = action({
     documentId: v.id('documents'),
   },
   async handler(ctx, args) {
-    const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier
+    const accessObj = await ctx.runQuery(
+      internal.documents.hasAccessToDocumentQuery,
+      {
+        documentId: args.documentId,
+      }
+    )
 
-    if (!userId) {
-      throw new ConvexError('Not Authenticated')
+    if (!accessObj) {
+      throw new ConvexError('You do not have access to this document')
     }
 
-    const document = await ctx.runQuery(api.documents.getDocument, {
-      documentId: args.documentId,
-    })
-
-    if (!document) {
-      throw new ConvexError('Document not found')
-    }
-
-    const file = await ctx.storage.get(document.fileId)
+    const file = await ctx.storage.get(accessObj.document.fileId)
 
     if (!file) {
       throw new ConvexError('File not found')
@@ -116,6 +143,27 @@ export const askQuestion = action({
         model: 'gpt-3.5-turbo',
       })
 
-    return chatCompletion.choices[0].message.content
+    // TODO: store user prompt as a chat record
+    await ctx.runMutation(internal.chats.createChatRecord, {
+      documentId: args.documentId,
+      text: args.question,
+      isHuman: true,
+      tokenIdentifier: accessObj.userId,
+    })
+
+    // TODO: store AI response as a chat record
+
+    const response =
+      chatCompletion.choices[0].message.content ??
+      'Could not generate a response'
+
+    await ctx.runMutation(internal.chats.createChatRecord, {
+      documentId: args.documentId,
+      text: response,
+      isHuman: false,
+      tokenIdentifier: accessObj.userId,
+    })
+
+    return response
   },
 })
