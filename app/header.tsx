@@ -19,7 +19,7 @@ export function Header() {
           </Link>
 
           <Link
-            href='/'
+            href='/dashboard/documents'
             className='hover:text-slate-400'
           >
             Documents
