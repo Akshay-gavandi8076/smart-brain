@@ -28,7 +28,7 @@ export default function UploadDocumentForm({
 }: {
   onUpload: () => void
 }) {
-  const createDocument = useMutation(api.documents.createDocuments)
+  const createDocument = useMutation(api.documents.createDocument)
   const generateUploadUrl = useMutation(api.documents.generateUploadUrl)
 
   const form = useForm<z.infer<typeof formSchema>>({
