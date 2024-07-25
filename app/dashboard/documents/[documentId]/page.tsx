@@ -18,15 +18,15 @@ export default function DocumentPage({
   });
 
   return (
-    <main className="space-y-8 w-full h-full">
+    <main className="h-full w-full space-y-8">
       {!document && (
         <div className="space-y-10">
           <div>
-            <Skeleton className="w-3/4 h-8" />
+            <Skeleton className="h-8 w-3/4" />
           </div>
           <div className="flex gap-1">
-            <Skeleton className="w-24 h-8" />
-            <Skeleton className="w-24 h-8" />
+            <Skeleton className="h-8 w-24" />
+            <Skeleton className="h-8 w-24" />
           </div>
           <Skeleton className="h-[500px]" />
         </div>
@@ -34,7 +34,7 @@ export default function DocumentPage({
 
       {document && (
         <>
-          <div className="flex justify-between items-center">
+          <div className="flex items-center justify-between">
             <h1 className="text-4xl font-bold">{document.title}</h1>
 
             <DeleteDocumentButton documentId={document._id} />
@@ -46,10 +46,10 @@ export default function DocumentPage({
                 <TabsTrigger value="chat">Chat</TabsTrigger>
               </TabsList>
               <TabsContent value="document">
-                <div className="bg-gray-900 p-4 rounded-xl flex-1 h-[650px]">
+                <div className="h-[650px] flex-1 rounded-xl bg-zinc-600 p-4">
                   {document.documentUrl && (
                     <iframe
-                      className="w-full h-full"
+                      className="h-full w-full"
                       src={document.documentUrl}
                     />
                   )}

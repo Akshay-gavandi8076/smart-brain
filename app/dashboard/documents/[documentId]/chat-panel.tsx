@@ -13,12 +13,11 @@ export default function ChatPanel({
   documentId: Id<"documents">;
 }) {
   const chats = useQuery(api.chats.getChatsForDocument, { documentId });
-  const user = useUser();
 
   return (
-    <div className="bg-gray-900 flex flex-col gap-2 p-4 rounded-xl">
-      <div className="h-[575px] overflow-y-auto space-y-2">
-        <div className="bg-slate-950 rounded p-2">
+    <div className="flex flex-col gap-2 rounded-xl bg-zinc-800 p-4">
+      <div className="h-[650px] space-y-2 overflow-y-auto">
+        <div className="rounded bg-zinc-950 p-2">
           AI: Ask any questions using AI about this document below:
         </div>
 
@@ -27,11 +26,12 @@ export default function ChatPanel({
           <div
             className={cn(
               {
-                "bg-slate-600": chat.isHuman,
-                "bg-slate-950": !chat.isHuman,
+                "bg-zinc-900": chat.isHuman,
+                "cursor-pointer bg-transparent hover:bg-zinc-900":
+                  !chat.isHuman,
                 "text-right": chat.isHuman,
               },
-              "rounded p-4 whitespace-pre-line",
+              "whitespace-pre-line rounded p-4",
             )}
           >
             {chat.isHuman ? "YOU" : "AI"}: {chat.text}

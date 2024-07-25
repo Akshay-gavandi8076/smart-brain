@@ -1,12 +1,12 @@
-'use client'
+"use client";
 
-import { Input } from '@/components/ui/input'
-import { api } from '@/convex/_generated/api'
-import { Id } from '@/convex/_generated/dataModel'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useAction } from 'convex/react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import { Input } from "@/components/ui/input";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useAction } from "convex/react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import {
   Form,
   FormControl,
@@ -14,42 +14,42 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { LoadingButton } from '@/components/loading-button'
+} from "@/components/ui/form";
+import { LoadingButton } from "@/components/loading-button";
 
 const formSchema = z.object({
   text: z.string().min(2).max(250),
-})
+});
 
-export function QuestionForm({ documentId }: { documentId: Id<'documents'> }) {
-  const askQuestion = useAction(api.documents.askQuestion)
+export function QuestionForm({ documentId }: { documentId: Id<"documents"> }) {
+  const askQuestion = useAction(api.documents.askQuestion);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      text: '',
+      text: "",
     },
-  })
+  });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await askQuestion({ question: values.text, documentId })
-    form.reset()
+    await askQuestion({ question: values.text, documentId });
+    form.reset();
   }
 
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className='flex-1 gap-1 w-full flex'
+        className="flex w-full flex-1 gap-1"
       >
         <FormField
           control={form.control}
-          name='text'
+          name="text"
           render={({ field }) => (
-            <FormItem className='flex-1'>
+            <FormItem className="flex-1 rounded-md bg-zinc-950">
               <FormControl>
                 <Input
-                  placeholder='Ask any questions using AI about this document below:'
+                  placeholder="Ask any questions using AI about this document below:"
                   {...field}
                 />
               </FormControl>
@@ -60,11 +60,11 @@ export function QuestionForm({ documentId }: { documentId: Id<'documents'> }) {
 
         <LoadingButton
           isLoading={form.formState.isSubmitting}
-          loadingText='Submitting...'
+          loadingText="Submitting..."
         >
           Submit
         </LoadingButton>
       </form>
     </Form>
-  )
+  );
 }
