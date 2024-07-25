@@ -19,9 +19,9 @@ function SearchResults({
 }) {
   return (
     <Link href={url}>
-      <li className='space-y-8 bg-slate-800  hover:bg-slate-700 rounded p-4 whitespace-pre-line'>
+      <li className='space-y-8 bg-slate-800 hover:bg-slate-700 rounded p-4 whitespace-pre-line'>
         <div className='flex text-2xl items-center justify-between'>
-          <div className='flex gap-2 items-center'>
+          <div className='flex gap-2 items-center '>
             {type === 'note' ? (
               <NotebookPen className='h-5 w-5' />
             ) : (
@@ -52,7 +52,7 @@ export default function SearchPage() {
   return (
     <main className='w-full space-y-8'>
       <div className='flex justify-between items-center'>
-        <h1 className='text-4xl font-bold'>Settings</h1>
+        <h1 className='text-4xl font-bold'>Search</h1>
       </div>
 
       <SearchForm

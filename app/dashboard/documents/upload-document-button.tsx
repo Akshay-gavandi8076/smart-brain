@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import { Button } from '@/components/ui/button'
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -8,19 +8,16 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import UploadDocumentForm from './upload-document-form'
-import { useState } from 'react'
-import { Upload } from 'lucide-react'
-import { btnIconStyles, btnStyles } from '@/styles/styles'
+} from "@/components/ui/dialog";
+import UploadDocumentForm from "./upload-document-form";
+import { useState } from "react";
+import { Upload } from "lucide-react";
+import { btnIconStyles, btnStyles } from "@/styles/styles";
 
 export default function UploadeDocumentButton() {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
   return (
-    <Dialog
-      onOpenChange={setIsOpen}
-      open={isOpen}
-    >
+    <Dialog onOpenChange={setIsOpen} open={isOpen}>
       <DialogTrigger asChild>
         <Button className={btnStyles}>
           <Upload className={btnIconStyles} />
@@ -37,5 +34,5 @@ export default function UploadeDocumentButton() {
         </DialogHeader>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
