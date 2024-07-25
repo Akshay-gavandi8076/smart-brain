@@ -4,7 +4,6 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useParams } from "next/navigation";
 import { Id } from "@/convex/_generated/dataModel";
-import { DeleteNoteButton } from "./delete-note-button";
 
 export default function NotesPage() {
   const { noteId } = useParams<{ noteId: Id<"notes"> }>();
@@ -17,10 +16,8 @@ export default function NotesPage() {
   }
 
   return (
-    <div className="relative bg-slate-800 rounded p-4 w-full h-full">
-      <DeleteNoteButton noteId={note?._id} />
-
-      <div className="pr-8 whitespace-pre-line">{note?.text}</div>
+    <div className="relative h-full w-full rounded bg-zinc-100 p-4 dark:bg-zinc-900">
+      <div className="whitespace-pre-line pr-8">{note?.text}</div>
     </div>
   );
 }

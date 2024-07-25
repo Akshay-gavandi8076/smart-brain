@@ -18,7 +18,7 @@ export default function NotesLayout({ children }: { children: ReactNode }) {
 
   return (
     <main className="w-full space-y-8">
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <h1 className="text-4xl font-bold">Notes</h1>
 
         <CreateNoteButton />
@@ -42,7 +42,7 @@ export default function NotesLayout({ children }: { children: ReactNode }) {
       )}
 
       {notes?.length === 0 && (
-        <div className="py-12 flex flex-col justify-center items-center gap-6">
+        <div className="flex flex-col items-center justify-center gap-6 py-12">
           <Image
             src="/documents.svg"
             width="200"
@@ -56,21 +56,22 @@ export default function NotesLayout({ children }: { children: ReactNode }) {
       )}
 
       {notes && notes?.length > 0 && (
-        <div className="flex gap-12">
-          <ul className="space-y-2 w-[300px]">
+        <div className="flex gap-4">
+          <ul className="w-[300px] space-y-2">
             {notes?.map((note) => (
               <li
                 key={note._id}
                 className={cn(
-                  "font-light flex gap-2 items-center text-base hover:text-blue-300",
+                  "flex items-center gap-2 rounded border p-3 text-base font-light hover:bg-accent hover:text-accent-foreground",
                   {
-                    "text-blue-500": note._id === noteId,
+                    "bg-accent": note._id === noteId,
                   },
                 )}
               >
                 <Link href={`/dashboard/notes/${note._id}`}>
                   {note.text.substring(0, 30) + "..."}
                 </Link>
+                <DeleteNoteButton noteId={note?._id} />
               </li>
             ))}
           </ul>
