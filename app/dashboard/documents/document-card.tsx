@@ -9,6 +9,7 @@ import {
 import { Doc } from "@/convex/_generated/dataModel";
 import { Eye, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { DeleteDocumentButton } from "./[documentId]/delete-document-button";
 
 export function DocumentCard({ document }: { document: Doc<"documents"> }) {
   return (
@@ -23,18 +24,19 @@ export function DocumentCard({ document }: { document: Doc<"documents"> }) {
               <Loader2 className="animate-spin" />
             </div>
           ) : (
-            document.description
+            <>{document.description.substring(0, 90) + "..."}</>
           )}
         </div>
       </CardContent>
 
-      <CardFooter>
+      <CardFooter className="flex justify-between">
         <Button variant="secondary" className="flex items-center gap-2" asChild>
           <Link href={`/dashboard/documents/${document._id}`}>
             <Eye className="h-4 w-4" />
             View
           </Link>
         </Button>
+        <DeleteDocumentButton documentId={document._id} />
       </CardFooter>
     </Card>
   );

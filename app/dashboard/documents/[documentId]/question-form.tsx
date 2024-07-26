@@ -46,7 +46,7 @@ export function QuestionForm({ documentId }: { documentId: Id<"documents"> }) {
           control={form.control}
           name="text"
           render={({ field }) => (
-            <FormItem className="flex-1 rounded-md bg-zinc-950">
+            <FormItem className="flex-1 rounded-md bg-zinc-200 dark:bg-zinc-950">
               <FormControl>
                 <Input
                   placeholder="Ask any questions using AI about this document below:"
@@ -58,10 +58,7 @@ export function QuestionForm({ documentId }: { documentId: Id<"documents"> }) {
           )}
         />
 
-        <LoadingButton
-          isLoading={form.formState.isSubmitting}
-          loadingText="Submitting..."
-        >
+        <LoadingButton isLoading={form.formState.isSubmitting}>
           Submit
         </LoadingButton>
       </form>

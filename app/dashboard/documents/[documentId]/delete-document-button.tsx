@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import { LoadingButton } from '@/components/loading-button'
+import { LoadingButton } from "@/components/loading-button";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,36 +11,30 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
-import { api } from '@/convex/_generated/api'
-import { Id } from '@/convex/_generated/dataModel'
-import { btnIconStyles, btnStyles } from '@/styles/styles'
-import { useMutation } from 'convex/react'
-import { TrashIcon } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import { btnIconStyles, btnStyles } from "@/styles/styles";
+import { useMutation } from "convex/react";
+import { TrashIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export function DeleteDocumentButton({
   documentId,
 }: {
-  documentId: Id<'documents'>
+  documentId: Id<"documents">;
 }) {
-  const [isLoading, setIsLoading] = useState(false)
-  const deleteDocument = useMutation(api.documents.deleteDocument)
-  const [isOpen, setIsOpen] = useState(false)
-  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false);
+  const deleteDocument = useMutation(api.documents.deleteDocument);
+  const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
   return (
-    <AlertDialog
-      open={isOpen}
-      onOpenChange={(open) => setIsOpen(open)}
-    >
+    <AlertDialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
       <AlertDialogTrigger>
-        <Button
-          variant='destructive'
-          className={btnStyles}
-        >
+        <Button variant="destructive" className={btnStyles}>
           <TrashIcon className={btnIconStyles} /> Delete
         </Button>
       </AlertDialogTrigger>
@@ -58,22 +52,22 @@ export function DeleteDocumentButton({
 
           <LoadingButton
             onClick={() => {
-              setIsLoading(true)
+              setIsLoading(true);
               deleteDocument({ documentId })
                 .then(() => {
-                  router.push('/')
+                  router.push("/dashboard/documents");
                 })
                 .finally(() => {
-                  setIsLoading(false)
-                })
+                  setIsLoading(false);
+                });
             }}
             isLoading={isLoading}
-            loadingText='Deleting...'
+            loadingText="Deleting..."
           >
             Delete
           </LoadingButton>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  )
+  );
 }

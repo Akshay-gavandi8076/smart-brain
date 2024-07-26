@@ -10,7 +10,7 @@ export function LoadingButton({
 }: {
   isLoading: boolean;
   children: ReactNode;
-  loadingText: string;
+  loadingText?: string;
   onClick?: (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => void;
 }) {
   return (

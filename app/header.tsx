@@ -25,25 +25,27 @@ export default function Header() {
   };
 
   return (
-    <div className={"fixed inset-x-0 top-10 z-50 mx-auto max-w-2xl"}>
-      <div className="relative flex items-center justify-between space-x-6 rounded-full border bg-white px-6 py-2 shadow-input dark:border-white/[0.2] dark:bg-black">
-        {isSignedIn && (
-          <div className="flex gap-4">
-            <Link
-              href="/dashboard/documents"
-              className="text-sm font-semibold hover:text-slate-500"
-            >
-              Documents
-            </Link>
-            <Link
-              href="/dashboard/notes"
-              className="text-sm font-semibold hover:text-slate-500"
-            >
-              Notes
-            </Link>
-          </div>
-        )}
+    <div className="fixed inset-x-0 top-10 z-50 mx-auto max-w-2xl">
+      <div className="relative flex items-center justify-between space-x-6 rounded-full border bg-white px-6 py-2 shadow-md dark:border-white/[0.2] dark:bg-black">
         <div className="flex gap-4">
+          {isSignedIn && (
+            <div className="flex gap-4">
+              <Link
+                href="/dashboard/documents"
+                className="text-sm font-semibold hover:text-slate-500"
+              >
+                Documents
+              </Link>
+              <Link
+                href="/dashboard/notes"
+                className="text-sm font-semibold hover:text-slate-500"
+              >
+                Notes
+              </Link>
+            </div>
+          )}
+        </div>
+        <div className="flex items-center space-x-4">
           <div
             onClick={toggleTheme}
             className="flex cursor-pointer items-center rounded-md text-sm font-semibold hover:text-slate-500"
