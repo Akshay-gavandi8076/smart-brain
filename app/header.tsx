@@ -13,6 +13,7 @@ import {
 } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { Authenticated, AuthLoading } from "convex/react";
+import Image from "next/image";
 
 export default function Header() {
   const { setTheme, resolvedTheme } = useTheme();
@@ -27,7 +28,19 @@ export default function Header() {
   return (
     <div className="fixed inset-x-0 top-10 z-50 mx-auto max-w-2xl">
       <div className="relative flex items-center justify-between space-x-6 rounded-full border bg-white px-6 py-2 shadow-md dark:border-white/[0.2] dark:bg-black">
-        <div className="flex gap-4">
+        <div className="flex items-center gap-4">
+          <Link href="/" className="flex items-center gap-2 text-xl">
+            <Image
+              src="/logo.png"
+              width={25}
+              height={25}
+              className="rounded"
+              alt="an image of a brain"
+            />
+            <span className="text-lg font-semibold">
+              Smart <span className="text-blue-500">Brain</span>
+            </span>
+          </Link>
           {isSignedIn && (
             <div className="flex gap-4">
               <Link
