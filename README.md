@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🧠 [Smart Brain](https://smart-brain-black.vercel.app/) [![Visit](https://img.shields.io/badge/Visit-green?logo=globe&logoColor=white)](https://smart-brain-black.vercel.app/)
 
-## Getting Started
+Welcome to **Smart Brain** – your intelligent solution for efficient document management, note-taking, and fast information retrieval. Built with modern technologies, Smart Brain empowers users to interact seamlessly with their documents and notes while leveraging advanced search capabilities.
 
-First, run the development server:
+## Table of Contents
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- [Technologies Used](#technologies-used)
+- [Features](#features)
+- [Future Implementations](#future-implementations)
+- [Screenshots](#screenshots)
+- [Environment Variables](#environment-variables)
+
+## Technologies Used
+
+This section lists the external resources and technologies used in the project.
+
+- **[Next.js](https://nextjs.org/)**: A React framework for server-side rendering and static site generation.
+- **[TypeScript](https://www.typescriptlang.org/)**: Enhances JavaScript with type safety and improved developer tooling.
+- **[Tailwind CSS](https://tailwindcss.com/)**: A utility-first CSS framework for designing custom user interfaces effortlessly.
+- **[Shadcn](https://shadcn.dev/)**: A modern UI component library for building accessible and responsive web interfaces.
+- **[Convex](https://convex.dev/)**: A serverless backend platform that simplifies building real-time applications.
+- **[Clerk](https://clerk.dev/)**: Provides secure user authentication and management.
+
+## Features
+
+- **📂 Document Upload**: Upload and organize your documents with ease.
+- **💬 Document Chat**: Engage in interactive chats with your documents to extract valuable insights.
+- **📝 Note Creation**: Create, manage, and organize your notes effectively.
+- **🔍 Vector Search**: Perform quick and accurate searches to find relevant information using advanced vector search technology.
+- **🔐 Authentication**: Secure user authentication and management with Clerk.
+
+## Future Implementations
+
+We are continually working on improving Smart Brain. Upcoming features include:
+
+🏢 Organization Management: Integrate Clerk’s organization feature to manage and organize user accounts more effectively.
+
+## Screenshots
+
+Include screenshots of your application to give users a visual preview.
+
+![Screenshot 1](/public/landing-page.png)
+
+## Environment Variables
+
+This project uses several environment variables for configuration. Create a `.env` file in the root of your project and add the following variables:
+
+```dotenv
+CONVEX_DEPLOYMENT=
+
+NEXT_PUBLIC_CONVEX_URL=
+
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+
+CLERK_SECRET_KEY=
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
