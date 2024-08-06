@@ -14,7 +14,9 @@ export default function Home() {
   return (
     <main className="space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-4xl font-bold">My Documents</h1>
+        <h1 className="text-2xl font-bold sm:text-4xl md:text-4xl lg:text-4xl">
+          My Documents
+        </h1>
         <UploadeDocumentButton />
       </div>
 
@@ -47,7 +49,7 @@ export default function Home() {
       )}
 
       {documents && documents.length > 0 && (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {documents?.map((doc) => (
             <DocumentCard key={doc._id} document={doc} />
           ))}

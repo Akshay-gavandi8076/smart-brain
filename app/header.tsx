@@ -37,7 +37,8 @@ export default function Header() {
               className="rounded"
               alt="an image of a brain"
             />
-            <span className="text-lg font-semibold">
+
+            <span className="hidden text-lg font-semibold sm:inline">
               Smart <span className="text-blue-500">Brain</span>
             </span>
           </Link>
@@ -66,12 +67,12 @@ export default function Header() {
             {isDarkMode ? (
               <>
                 <SunIcon className="h-4 w-4 font-semibold" />
-                <span className="ml-2">Light</span>
+                <span className="ml-2 hidden sm:inline">Light</span>
               </>
             ) : (
               <>
                 <MoonIcon className="h-4 w-4 font-semibold" />
-                <span className="ml-2">Dark</span>
+                <span className="ml-2 hidden sm:inline">Dark</span>
               </>
             )}
           </div>

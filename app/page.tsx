@@ -36,7 +36,7 @@ export default function LandingPage() {
             alt="an image of a brain"
           />
           <TypewriterEffect words={words} />
-          <p className="relative max-w-prose bg-gradient-to-b from-neutral-200 to-neutral-500 bg-clip-text text-xl font-bold text-transparent">
+          <p className="relative max-w-prose bg-gradient-to-b from-neutral-200 to-neutral-500 bg-clip-text px-6 text-center text-xl font-bold leading-relaxed text-transparent md:px-12">
             Unlock the power of seamless organization and lightning-fast
             retrieval with Smart Brain. Whether you&apos;re jotting down notes,
             uploading files, or searching for information instantly, our

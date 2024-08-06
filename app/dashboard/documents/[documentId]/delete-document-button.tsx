@@ -35,7 +35,8 @@ export function DeleteDocumentButton({
     <AlertDialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
       <AlertDialogTrigger>
         <Button variant="destructive" className={btnStyles}>
-          <TrashIcon className={btnIconStyles} /> Delete
+          <TrashIcon className={btnIconStyles} />
+          <span className="hidden sm:inline">Delete</span>
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>

@@ -1,58 +1,60 @@
-'use client'
+"use client";
 
-import { Input } from '@/components/ui/input'
-import { api } from '@/convex/_generated/api'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useAction } from 'convex/react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import { Input } from "@/components/ui/input";
+import { api } from "@/convex/_generated/api";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useAction } from "convex/react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from '@/components/ui/form'
-import { LoadingButton } from '@/components/loading-button'
+} from "@/components/ui/form";
+import { LoadingButton } from "@/components/loading-button";
+import { Search } from "lucide-react";
+import { btnIconStyles } from "@/styles/styles";
 
 const formSchema = z.object({
   search: z.string().min(2).max(250),
-})
+});
 
 export function SearchForm({
   setResults,
 }: {
-  setResults: (notes: typeof api.search.searchAction._returnType) => void
+  setResults: (notes: typeof api.search.searchAction._returnType) => void;
 }) {
-  const searchAction = useAction(api.search.searchAction)
+  const searchAction = useAction(api.search.searchAction);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      search: '',
+      search: "",
     },
-  })
+  });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await searchAction({ search: values.search }).then(setResults)
+    await searchAction({ search: values.search }).then(setResults);
 
-    form.reset()
+    form.reset();
   }
 
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className='flex-1 gap-1 flex'
+        className="flex flex-1 gap-1"
       >
         <FormField
           control={form.control}
-          name='search'
+          name="search"
           render={({ field }) => (
-            <FormItem className='flex-1'>
+            <FormItem className="flex-1">
               <FormControl>
                 <Input
-                  placeholder='Search over all your notes and documents using vector searching'
+                  placeholder="Search over all your notes and documents using vector searching"
                   {...field}
                 />
               </FormControl>
@@ -63,11 +65,12 @@ export function SearchForm({
 
         <LoadingButton
           isLoading={form.formState.isSubmitting}
-          loadingText='Searching...'
+          loadingText="Searching..."
         >
-          Search
+          <Search className={btnIconStyles} />
+          <span className="hidden sm:inline">Search</span>
         </LoadingButton>
       </form>
     </Form>
-  )
+  );
 }

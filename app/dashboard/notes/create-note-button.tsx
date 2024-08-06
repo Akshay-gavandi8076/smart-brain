@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import { Button } from '@/components/ui/button'
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -8,26 +8,23 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { useState } from 'react'
-import { PlusIcon, Upload } from 'lucide-react'
-import { btnIconStyles, btnStyles } from '@/styles/styles'
-import CreateNoteForm from './create-note-form'
-import { useToast } from '@/components/ui/use-toast'
+} from "@/components/ui/dialog";
+import { useState } from "react";
+import { PlusIcon, Upload } from "lucide-react";
+import { btnIconStyles, btnStyles } from "@/styles/styles";
+import CreateNoteForm from "./create-note-form";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function CreateNoteButton() {
-  const [isOpen, setIsOpen] = useState(false)
-  const { toast } = useToast()
+  const [isOpen, setIsOpen] = useState(false);
+  const { toast } = useToast();
 
   return (
-    <Dialog
-      onOpenChange={setIsOpen}
-      open={isOpen}
-    >
+    <Dialog onOpenChange={setIsOpen} open={isOpen}>
       <DialogTrigger asChild>
         <Button className={btnStyles}>
           <PlusIcon className={btnIconStyles} />
-          Create Note
+          <span className="hidden sm:inline">Create Note</span>
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -38,16 +35,16 @@ export default function CreateNoteButton() {
           </DialogDescription>
           <CreateNoteForm
             onNoteCreated={() => {
-              setIsOpen(false)
+              setIsOpen(false);
 
               toast({
-                title: 'Note created',
-                description: 'Your note has been created successfully.',
-              })
+                title: "Note created",
+                description: "Your note has been created successfully.",
+              });
             }}
           />
         </DialogHeader>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

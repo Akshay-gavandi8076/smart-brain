@@ -21,7 +21,7 @@ export default function UploadeDocumentButton() {
       <DialogTrigger asChild>
         <Button className={btnStyles}>
           <Upload className={btnIconStyles} />
-          Upload Document
+          <span className="hidden sm:inline">Upload Document</span>
         </Button>
       </DialogTrigger>
       <DialogContent>

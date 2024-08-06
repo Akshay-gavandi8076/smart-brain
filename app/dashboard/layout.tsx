@@ -9,7 +9,7 @@ export default function DashboardLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
+  const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
 
   const toggleSidebar = () => {
     setIsSidebarExpanded(!isSidebarExpanded);
@@ -17,7 +17,7 @@ export default function DashboardLayout({
 
   return (
     <div className="flex h-screen flex-row justify-start">
-      <aside className="flex-none">
+      <aside className="flex-none transition-all duration-300 ease-in-out">
         <Sidebar isExpanded={isSidebarExpanded} toggleSidebar={toggleSidebar} />
       </aside>
       <main
@@ -29,11 +29,4 @@ export default function DashboardLayout({
       </main>
     </div>
   );
-  // return (
-  //   <div className="mx-auto flex gap-16 p-10 pt-12">
-  //     <SideNav />
-
-  //     {children}
-  //   </div>
-  // );
 }

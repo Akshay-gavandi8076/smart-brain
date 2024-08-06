@@ -19,7 +19,9 @@ export default function NotesLayout({ children }: { children: ReactNode }) {
   return (
     <main className="w-full space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-4xl font-bold">Notes</h1>
+        <h1 className="text-2xl font-bold sm:text-4xl md:text-4xl lg:text-4xl">
+          Notes
+        </h1>
 
         <CreateNoteButton />
       </div>
@@ -49,7 +51,9 @@ export default function NotesLayout({ children }: { children: ReactNode }) {
             height="200"
             alt="No documents"
           />
-          <h2 className="text-2xl">You have no notes</h2>
+          <h2 className="text-2xl font-bold sm:text-2xl md:text-4xl lg:text-4xl">
+            You have no notes
+          </h2>
 
           <CreateNoteButton />
         </div>

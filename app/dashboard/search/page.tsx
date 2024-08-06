@@ -19,7 +19,8 @@ function SearchResults({
 }) {
   return (
     <Link href={url}>
-      <li className="cursor-pointer space-y-8 whitespace-pre-line rounded bg-zinc-800 p-4 hover:bg-zinc-900">
+      {/*  bg-zinc-200 p-4 text-black dark:bg-zinc-800 dark:text-white */}
+      <li className="cursor-pointer space-y-8 whitespace-pre-line rounded bg-zinc-100 p-4 text-black dark:bg-zinc-800 dark:text-white">
         <div className="flex items-center justify-between text-2xl">
           <div className="flex items-center gap-2">
             {type === "note" ? (
@@ -29,8 +30,9 @@ function SearchResults({
             )}
             {type === "note" ? "Note" : "Document"}
           </div>
-          <div className="rounded-xl bg-zinc-800 p-2 text-sm">
-            Relevancy of {score.toFixed(2)}
+          <div className="rounded-xl bg-zinc-200 p-2 text-sm text-black dark:bg-zinc-700 dark:text-white">
+            <span className="hidden sm:inline">Relevancy of</span>
+            {score.toFixed(2)}
           </div>
         </div>
         {text.substring(0, 300) + "..."}
@@ -54,7 +56,9 @@ export default function SearchPage() {
   return (
     <main className="w-full space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-4xl font-bold">Search</h1>
+        <h1 className="text-2xl font-bold sm:text-4xl md:text-4xl lg:text-4xl">
+          Search
+        </h1>
       </div>
 
       <SearchForm
