@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
@@ -7,6 +8,10 @@ import ChatPanel from "./chat-panel";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DeleteDocumentButton } from "./delete-document-button";
+import { Button } from "@/components/ui/button";
+import { Arrow } from "@radix-ui/react-dropdown-menu";
+import { ArrowLeftFromLine, ArrowRightFromLine } from "lucide-react";
+import { btnIconStyles } from "@/styles/styles";
 
 export default function DocumentPage({
   params,
@@ -17,48 +22,67 @@ export default function DocumentPage({
     documentId: params.documentId,
   });
 
+  const [isMinimized, setIsMinimized] = useState(false);
+
+  const toggleMinimize = () => {
+    setIsMinimized(!isMinimized);
+  };
+
   return (
     <main className="h-full w-full space-y-8">
-      {!document && (
-        <div className="space-y-10">
-          <div>
-            <Skeleton className="h-8 w-3/4" />
-          </div>
-          <div className="flex gap-1">
-            <Skeleton className="h-8 w-24" />
-            <Skeleton className="h-8 w-24" />
-          </div>
-          <Skeleton className="h-[500px]" />
-        </div>
-      )}
-
       {document && (
         <>
           <div className="flex items-center justify-between">
             <h1 className="text-4xl font-bold">{document.title}</h1>
-
             <DeleteDocumentButton documentId={document._id} />
           </div>
-          <div className="flex gap-12">
-            <Tabs defaultValue="document" className="w-full">
-              <TabsList className="mb-2">
-                <TabsTrigger value="document">Document</TabsTrigger>
-                <TabsTrigger value="chat">Chat</TabsTrigger>
-              </TabsList>
-              <TabsContent value="document">
-                <div className="h-[726px] flex-1 rounded-xl bg-zinc-200 p-4 text-black dark:bg-zinc-800 dark:text-white">
-                  {document.documentUrl && (
-                    <iframe
-                      className="h-full w-full"
-                      src={document.documentUrl}
-                    />
-                  )}
-                </div>
-              </TabsContent>
-              <TabsContent value="chat">
-                <ChatPanel documentId={document._id} />
-              </TabsContent>
-            </Tabs>
+          <div className="flex h-[780px] gap-6">
+            <div
+              className={`${
+                isMinimized ? "flex-[1_1_100%]" : "flex-[1_1_50%]"
+              } rounded-xl bg-zinc-200 p-4 text-black transition-all duration-300 ease-in-out dark:bg-zinc-800 dark:text-white`}
+            >
+              {document.documentUrl && (
+                <iframe className="h-full w-full" src={document.documentUrl} />
+              )}
+            </div>
+
+            <div
+              className={`${
+                isMinimized
+                  ? "w-8 translate-x-full"
+                  : "flex-[1_1_50%] translate-x-0"
+              } relative h-full rounded-xl transition-all duration-500 ease-linear`}
+            >
+              <Button
+                className="absolute -left-4 rounded-xl transition-all duration-300 ease-linear"
+                onClick={toggleMinimize}
+                variant="outline"
+                size="icon"
+              >
+                {isMinimized ? (
+                  <ArrowLeftFromLine className={btnIconStyles} />
+                ) : (
+                  <ArrowRightFromLine className={btnIconStyles} />
+                )}
+              </Button>
+              {!isMinimized && (
+                <Tabs defaultValue="chat">
+                  <TabsList className="mb-2 ml-8">
+                    <TabsTrigger value="chat">Chat</TabsTrigger>
+                    <TabsTrigger value="note">Note</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="chat">
+                    <ChatPanel documentId={document._id} />
+                  </TabsContent>
+                  <TabsContent value="note">
+                    <div className="h-full w-full rounded-xl bg-zinc-200 p-4 text-black dark:bg-zinc-800 dark:text-white">
+                      Coming soon...
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              )}
+            </div>
           </div>
         </>
       )}
