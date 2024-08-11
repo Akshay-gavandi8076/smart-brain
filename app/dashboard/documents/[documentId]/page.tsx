@@ -12,6 +12,11 @@ import { Button } from "@/components/ui/button";
 import { Arrow } from "@radix-ui/react-dropdown-menu";
 import { ArrowLeftFromLine, ArrowRightFromLine } from "lucide-react";
 import { btnIconStyles } from "@/styles/styles";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function DocumentPage({
   params,
@@ -61,9 +66,23 @@ export default function DocumentPage({
                 size="icon"
               >
                 {isMinimized ? (
-                  <ArrowLeftFromLine className={btnIconStyles} />
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <ArrowLeftFromLine className={btnIconStyles} />
+                    </TooltipTrigger>
+                    <TooltipContent side="top">
+                      <p>Open AI Copilot</p>
+                    </TooltipContent>
+                  </Tooltip>
                 ) : (
-                  <ArrowRightFromLine className={btnIconStyles} />
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <ArrowRightFromLine className={btnIconStyles} />
+                    </TooltipTrigger>
+                    <TooltipContent side="top">
+                      <p>Close AI Copilot</p>
+                    </TooltipContent>
+                  </Tooltip>
                 )}
               </Button>
               {!isMinimized && (

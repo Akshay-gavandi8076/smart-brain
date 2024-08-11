@@ -16,6 +16,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { LoadingButton } from "@/components/loading-button";
+import { Send } from "lucide-react";
+import { btnIconStyles } from "@/styles/styles";
 
 const formSchema = z.object({
   text: z.string().min(2).max(250),
@@ -49,7 +51,7 @@ export function QuestionForm({ documentId }: { documentId: Id<"documents"> }) {
             <FormItem className="flex-1 rounded-md bg-zinc-200 dark:bg-zinc-950">
               <FormControl>
                 <Input
-                  placeholder="Ask any questions using AI about this document below:"
+                  placeholder="Ask any questions using AI about this document:"
                   {...field}
                 />
               </FormControl>
@@ -58,8 +60,8 @@ export function QuestionForm({ documentId }: { documentId: Id<"documents"> }) {
           )}
         />
 
-        <LoadingButton isLoading={form.formState.isSubmitting}>
-          Submit
+        <LoadingButton isLoading={form.formState.isSubmitting} size="icon">
+          <Send className={btnIconStyles} />
         </LoadingButton>
       </form>
     </Form>

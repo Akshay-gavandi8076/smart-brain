@@ -7,6 +7,7 @@ import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { dark } from "@clerk/themes";
 import React from "react";
 import { useTheme } from "next-themes";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
@@ -18,7 +19,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
       enableSystem
       disableTransitionOnChange
     >
-      <OtherProviders>{children}</OtherProviders>
+      <TooltipProvider>
+        <OtherProviders>{children}</OtherProviders>
+      </TooltipProvider>
     </ThemeProvider>
   );
 }
