@@ -21,11 +21,11 @@ export default function ChatPanel({
   return (
     <div className="flex flex-col gap-2 rounded-xl p-2 dark:bg-zinc-800">
       <div className="h-[670px] space-y-2 overflow-y-auto">
-        <div className="flex justify-center">
+        {/* <div className="flex justify-center">
           <div className="flex w-2/4 justify-center rounded-xl bg-zinc-300 p-2 font-semibold dark:bg-zinc-900">
-            Ask copilot:
+            Ask AI copilot:
           </div>
-        </div>
+        </div> */}
 
         {chats?.map((chat) => (
           // eslint-disable-next-line react/jsx-key
@@ -44,15 +44,15 @@ export default function ChatPanel({
                 height={32}
               />
             ) : (
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900">
-                <Bot className="h-7 w-7 rounded text-blue-500" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-200 dark:bg-zinc-900">
+                <Bot className="h-7 w-7 text-blue-500" />
               </div>
             )}
 
             <div
               className={cn(
                 {
-                  "bg-white text-right dark:bg-zinc-900": chat.isHuman,
+                  "bg-zinc-100 text-right dark:bg-zinc-900": chat.isHuman,
                   "bg-gray-200 hover:bg-zinc-100 dark:bg-zinc-700 dark:hover:bg-zinc-900":
                     !chat.isHuman,
                 },

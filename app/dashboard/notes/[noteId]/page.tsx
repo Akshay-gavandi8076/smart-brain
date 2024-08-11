@@ -16,7 +16,7 @@ export default function NotesPage() {
   }
 
   return (
-    <div className="relative h-full w-full rounded bg-zinc-100 p-4 dark:bg-zinc-900">
+    <div className="relative h-[780px] w-full overflow-y-scroll rounded bg-zinc-100 p-4 dark:bg-zinc-900">
       <div className="whitespace-pre-line pr-8">{note?.text}</div>
     </div>
   );

@@ -45,10 +45,13 @@ export default function DocumentPage({
             <div
               className={`${
                 isMinimized ? "flex-[1_1_100%]" : "flex-[1_1_50%]"
-              } rounded-xl bg-zinc-200 p-4 text-black transition-all duration-300 ease-in-out dark:bg-zinc-800 dark:text-white`}
+              } rounded-xl bg-zinc-200 p-2 transition-all duration-300 ease-in-out dark:bg-zinc-800 dark:text-white`}
             >
               {document.documentUrl && (
-                <iframe className="h-full w-full" src={document.documentUrl} />
+                <iframe
+                  className="h-full w-full rounded-xl"
+                  src={document.documentUrl}
+                />
               )}
             </div>
 
