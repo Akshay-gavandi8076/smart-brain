@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { cn } from "@/lib/utils";
@@ -19,6 +19,14 @@ export default function ChatPanel({
   const chats = useQuery(api.chats.getChatsForDocument, { documentId });
   const { user } = useUser();
   const [copiedText, setCopiedText] = useState<string | null>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+  }, [chats]);
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -29,7 +37,10 @@ export default function ChatPanel({
 
   return (
     <div className="flex flex-col gap-2 rounded-xl p-2 dark:bg-zinc-800">
-      <div className="h-[670px] space-y-2 overflow-y-auto">
+      <div
+        ref={chatContainerRef}
+        className="h-[670px] space-y-2 overflow-y-auto"
+      >
         {chats?.map((chat) => (
           // eslint-disable-next-line react/jsx-key
           <div
