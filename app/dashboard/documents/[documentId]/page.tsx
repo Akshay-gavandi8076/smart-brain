@@ -6,10 +6,8 @@ import { Id } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
 import ChatPanel from "./chat-panel";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Skeleton } from "@/components/ui/skeleton";
 import { DeleteDocumentButton } from "./delete-document-button";
 import { Button } from "@/components/ui/button";
-import { Arrow } from "@radix-ui/react-dropdown-menu";
 import { ArrowLeftFromLine, ArrowRightFromLine } from "lucide-react";
 import { btnIconStyles } from "@/styles/styles";
 import {
