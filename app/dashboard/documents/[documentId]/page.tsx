@@ -8,13 +8,14 @@ import ChatPanel from "./chat-panel";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DeleteDocumentButton } from "./delete-document-button";
 import { Button } from "@/components/ui/button";
-import { ArrowLeftFromLine, ArrowRightFromLine } from "lucide-react";
+import { ArrowLeft, ArrowLeftFromLine, ArrowRightFromLine } from "lucide-react";
 import { btnIconStyles } from "@/styles/styles";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useRouter } from "next/navigation";
 
 export default function DocumentPage({
   params,
@@ -26,6 +27,7 @@ export default function DocumentPage({
   });
 
   const [isMinimized, setIsMinimized] = useState(false);
+  const router = useRouter();
 
   const toggleMinimize = () => {
     setIsMinimized(!isMinimized);
@@ -36,7 +38,17 @@ export default function DocumentPage({
       {document && (
         <>
           <div className="flex items-center justify-between">
-            <h1 className="text-4xl font-bold">{document.title}</h1>
+            <div className="flex items-center justify-between gap-4">
+              <Button
+                onClick={() => router.back()}
+                variant="outline"
+                size="icon"
+                className="rounded-full"
+              >
+                <ArrowLeft className={btnIconStyles} />
+              </Button>
+              <h1 className="text-4xl font-bold">{document.title}</h1>
+            </div>
             <DeleteDocumentButton documentId={document._id} />
           </div>
           <div className="flex h-[780px] gap-6">
