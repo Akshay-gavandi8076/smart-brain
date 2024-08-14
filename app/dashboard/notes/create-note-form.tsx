@@ -15,12 +15,12 @@ import { LoadingButton } from "@/components/loading-button";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 
 const formSchema = z.object({
   title: z.string().min(2).max(250),
   text: z.string().min(2),
+  tags: z.string().optional(),
 });
 
 export default function CreateNoteForm({
@@ -35,6 +35,7 @@ export default function CreateNoteForm({
     defaultValues: {
       title: "",
       text: "",
+      tags: "",
     },
   });
 
@@ -42,6 +43,7 @@ export default function CreateNoteForm({
     await createNote({
       title: values.title,
       text: values.text,
+      tags: values.tags,
     });
 
     onNoteCreated();
@@ -63,6 +65,7 @@ export default function CreateNoteForm({
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="text"
@@ -71,6 +74,23 @@ export default function CreateNoteForm({
               <FormLabel>Description</FormLabel>
               <FormControl>
                 <Textarea rows={8} placeholder="Your note" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="tags"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Tags</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Enter tags, separated by commas"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

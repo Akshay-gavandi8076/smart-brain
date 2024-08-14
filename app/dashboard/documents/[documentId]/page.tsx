@@ -16,6 +16,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useRouter } from "next/navigation";
+import { TagsList } from "@/components/tags-list";
+import { splitTags } from "@/lib/utils";
 
 export default function DocumentPage({
   params,
@@ -49,6 +51,11 @@ export default function DocumentPage({
               </Button>
               <h1 className="text-4xl font-bold">{document.title}</h1>
             </div>
+            <>
+              {document.tags && (
+                <TagsList tags={splitTags(document.tags || "")} />
+              )}
+            </>
             <DeleteDocumentButton documentId={document._id} />
           </div>
           <div className="flex h-[780px] gap-6">

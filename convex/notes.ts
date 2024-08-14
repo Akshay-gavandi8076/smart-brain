@@ -1,5 +1,3 @@
-// convex/notes.ts
-
 import { ConvexError, v } from "convex/values";
 import {
   internalAction,
@@ -100,6 +98,7 @@ export const createNote = mutation({
   args: {
     title: v.string(),
     text: v.string(),
+    tags: v.optional(v.string()),
   },
 
   async handler(ctx, args) {
@@ -113,6 +112,7 @@ export const createNote = mutation({
       title: args.title,
       text: args.text,
       tokenIdentifier: userId,
+      tags: args.tags || "",
     });
 
     await ctx.scheduler.runAfter(0, internal.notes.createNoteEmbedding, {

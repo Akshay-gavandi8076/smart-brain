@@ -9,12 +9,10 @@ import { ArrowLeft, Save, Edit, X } from "lucide-react";
 import { btnIconStyles } from "@/styles/styles";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
+import { TagsList } from "@/components/tags-list";
+import { splitTags } from "@/lib/utils";
 
-export default function NotesPage({
-  params,
-}: {
-  params: { noteId: Id<"notes"> };
-}) {
+export default function NotesPage() {
   const { noteId } = useParams<{ noteId: Id<"notes"> }>();
   const note = useQuery(api.notes.getNote, { noteId });
   const updateNote = useMutation(api.notes.updateNote);
@@ -75,6 +73,8 @@ export default function NotesPage({
             <h1 className="text-4xl font-bold">{title}</h1>
           )}
         </div>
+        <>{note?.tags && <TagsList tags={splitTags(note.tags || "")} />}</>
+
         <div className="flex gap-2">
           {isEditing ? (
             <>
@@ -82,7 +82,7 @@ export default function NotesPage({
                 onClick={handleSave}
                 variant="outline"
                 className="flex gap-2"
-                disabled={!hasChanges()} // Disable if no changes
+                disabled={!hasChanges()}
               >
                 <Save className={btnIconStyles} />
                 <span className="hidden sm:inline">Save</span>
@@ -126,49 +126,3 @@ export default function NotesPage({
     </main>
   );
 }
-
-// "use client";
-
-// import { useQuery } from "convex/react";
-// import { api } from "@/convex/_generated/api";
-// import { useParams, useRouter } from "next/navigation";
-// import { Id } from "@/convex/_generated/dataModel";
-// import { DeleteNoteButton } from "./delete-note-button";
-// import { ArrowLeft } from "lucide-react";
-// import { btnIconStyles } from "@/styles/styles";
-// import { Button } from "@/components/ui/button";
-
-// export default function NotesPage({
-//   params,
-// }: {
-//   params: { noteId: Id<"notes"> };
-// }) {
-//   const { noteId } = useParams<{ noteId: Id<"notes"> }>();
-//   const note = useQuery(api.notes.getNote, {
-//     noteId,
-//   });
-//   const router = useRouter();
-
-//   return (
-//     <main className="h-full w-full space-y-8">
-//       <div className="flex items-center justify-between">
-//         <div className="flex items-center justify-between gap-4">
-//           <Button
-//             onClick={() => router.back()}
-//             variant="outline"
-//             size="icon"
-//             className="rounded-full"
-//           >
-//             <ArrowLeft className={btnIconStyles} />
-//           </Button>
-
-//           <h1 className="text-4xl font-bold">{note?.title}</h1>
-//         </div>
-//         <DeleteNoteButton noteId={note?._id!} />
-//       </div>
-//       <div className="relative h-[780px] w-full overflow-y-scroll rounded bg-zinc-100 p-4 dark:bg-zinc-900">
-//         <div className="whitespace-pre-line pr-8">{note?.text}</div>
-//       </div>
-//     </main>
-//   );
-// }

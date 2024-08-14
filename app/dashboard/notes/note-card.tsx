@@ -10,6 +10,8 @@ import { Doc } from "@/convex/_generated/dataModel";
 import { Eye, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { DeleteNoteButton } from "./[noteId]/delete-note-button";
+import { TagsList } from "@/components/tags-list";
+import { splitTags } from "@/lib/utils";
 
 export function NoteCard({ note }: { note: Doc<"notes"> }) {
   return (
@@ -18,7 +20,7 @@ export function NoteCard({ note }: { note: Doc<"notes"> }) {
         <CardTitle>{note.title}</CardTitle>
       </CardHeader>
       <CardContent>
-        <div>
+        <div className="flex flex-col gap-4">
           {!note ? (
             <div className="flex justify-center">
               <Loader2 className="animate-spin" />
@@ -26,6 +28,7 @@ export function NoteCard({ note }: { note: Doc<"notes"> }) {
           ) : (
             <>{note.text.substring(0, 90) + "..."}</>
           )}
+          {note.tags && <TagsList tags={splitTags(note.tags || "")} />}
         </div>
       </CardContent>
 

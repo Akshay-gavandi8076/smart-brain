@@ -1,8 +1,9 @@
-'use client'
+// app/dashboard/documents/upload-document-form.tsx
+"use client";
 
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 import {
   Form,
@@ -11,66 +12,80 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { useMutation } from 'convex/react'
-import { api } from '@/convex/_generated/api'
-import { LoadingButton } from '@/components/loading-button'
-import { Id } from '@/convex/_generated/dataModel'
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { LoadingButton } from "@/components/loading-button";
+import { Id } from "@/convex/_generated/dataModel";
 
 const formSchema = z.object({
   title: z.string().min(2).max(250),
   file: z.custom<File>((file) => file instanceof File),
-})
+  tags: z.string().optional(),
+});
 
 export default function UploadDocumentForm({
   onUpload,
 }: {
-  onUpload: () => void
+  onUpload: () => void;
 }) {
-  const createDocument = useMutation(api.documents.createDocument)
-  const generateUploadUrl = useMutation(api.documents.generateUploadUrl)
+  const createDocument = useMutation(api.documents.createDocument);
+  const generateUploadUrl = useMutation(api.documents.generateUploadUrl);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: '',
+      title: "",
+      tags: "",
     },
-  })
+  });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const url = await generateUploadUrl()
+    const url = await generateUploadUrl();
 
     const result = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': values.file.type },
+      method: "POST",
+      headers: { "Content-Type": values.file.type },
       body: values.file,
-    })
+    });
 
-    const { storageId } = await result.json()
+    const { storageId } = await result.json();
 
     await createDocument({
       title: values.title,
-      fileId: storageId as Id<'_storage'>,
-    })
-    onUpload()
+      tags: values.tags,
+      fileId: storageId as Id<"_storage">,
+    });
+    onUpload();
   }
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className='space-y-8'
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
-          name='title'
+          name="title"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Title</FormLabel>
               <FormControl>
+                <Input placeholder="Expense Report" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="tags"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Tags</FormLabel>
+              <FormControl>
                 <Input
-                  placeholder='Expense Report'
+                  placeholder="Enter tags, separated by commas"
                   {...field}
                 />
               </FormControl>
@@ -81,18 +96,18 @@ export default function UploadDocumentForm({
 
         <FormField
           control={form.control}
-          name='file'
+          name="file"
           render={({ field: { value, onChange, ...fieldProps } }) => (
             <FormItem>
               <FormLabel>File</FormLabel>
               <FormControl>
                 <Input
                   {...fieldProps}
-                  type='file'
-                  accept='.txt,.xml,.doc'
+                  type="file"
+                  accept=".txt,.xml,.doc"
                   onChange={(event) => {
-                    const file = event.target.files?.[0]
-                    onChange(file)
+                    const file = event.target.files?.[0];
+                    onChange(file);
                   }}
                 />
               </FormControl>
@@ -103,11 +118,11 @@ export default function UploadDocumentForm({
 
         <LoadingButton
           isLoading={form.formState.isSubmitting}
-          loadingText='Uploading...'
+          loadingText="Uploading..."
         >
           Upload
         </LoadingButton>
       </form>
     </Form>
-  )
+  );
 }

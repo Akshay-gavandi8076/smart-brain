@@ -10,15 +10,18 @@ import { Doc } from "@/convex/_generated/dataModel";
 import { Eye, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { DeleteDocumentButton } from "./[documentId]/delete-document-button";
+import { TagsList } from "@/components/tags-list";
+import { splitTags } from "@/lib/utils";
 
 export function DocumentCard({ document }: { document: Doc<"documents"> }) {
+  console.log(document);
   return (
     <Card className="shadow-[0_10px_10px_rgba(8,_112,_184,_0.7)]">
       <CardHeader>
         <CardTitle>{document.title}</CardTitle>
       </CardHeader>
       <CardContent>
-        <div>
+        <div className="flex flex-col gap-4">
           {!document.description ? (
             <div className="flex justify-center">
               <Loader2 className="animate-spin" />
@@ -26,6 +29,8 @@ export function DocumentCard({ document }: { document: Doc<"documents"> }) {
           ) : (
             <>{document.description.substring(0, 90) + "..."}</>
           )}
+
+          {document.tags && <TagsList tags={splitTags(document.tags || "")} />}
         </div>
       </CardContent>
 
