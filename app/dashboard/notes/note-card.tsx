@@ -17,7 +17,7 @@ export function NoteCard({ note }: { note: Doc<"notes"> }) {
   return (
     <Card className="shadow-[0_10px_10px_rgba(8,_112,_184,_0.7)]">
       <CardHeader>
-        <CardTitle>{note.title}</CardTitle>
+        <CardTitle className="text-2xl">{note.title}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-4">

@@ -18,7 +18,7 @@ export function DocumentCard({ document }: { document: Doc<"documents"> }) {
   return (
     <Card className="shadow-[0_10px_10px_rgba(8,_112,_184,_0.7)]">
       <CardHeader>
-        <CardTitle>{document.title}</CardTitle>
+        <CardTitle className="text-2xl">{document.title}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-4">
@@ -27,7 +27,7 @@ export function DocumentCard({ document }: { document: Doc<"documents"> }) {
               <Loader2 className="animate-spin" />
             </div>
           ) : (
-            <>{document.description.substring(0, 90) + "..."}</>
+            <div>{document.description.substring(0, 90) + "..."}</div>
           )}
 
           {document.tags && <TagsList tags={splitTags(document.tags || "")} />}
