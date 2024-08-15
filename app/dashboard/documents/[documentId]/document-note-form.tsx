@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AutosizeTextarea } from "@/components/ui/autosize-textarea";
 
 const formSchema = z.object({
   text: z.string().min(2).max(5000),
