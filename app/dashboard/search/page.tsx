@@ -19,7 +19,6 @@ function SearchResults({
 }) {
   return (
     <Link href={url}>
-      {/*  bg-zinc-200 p-4 text-black dark:bg-zinc-800 dark:text-white */}
       <li className="cursor-pointer space-y-8 whitespace-pre-line rounded bg-zinc-100 p-4 text-black dark:bg-zinc-800 dark:text-white">
         <div className="flex items-center justify-between text-2xl">
           <div className="flex items-center gap-2">
@@ -31,7 +30,7 @@ function SearchResults({
             {type === "note" ? "Note" : "Document"}
           </div>
           <div className="rounded-xl bg-zinc-200 p-2 text-sm text-black dark:bg-zinc-700 dark:text-white">
-            <span className="hidden sm:inline">Relevancy of</span>
+            <span className="hidden sm:inline">Relevancy of</span> {""}
             {score.toFixed(2)}
           </div>
         </div>

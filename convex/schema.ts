@@ -1,4 +1,3 @@
-// convex/schema.ts
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
@@ -23,8 +22,10 @@ export default defineSchema({
     embedding: v.optional(v.array(v.float64())),
     tokenIdentifier: v.string(),
     tags: v.optional(v.string()),
+    documentId: v.optional(v.id("documents")),
   })
     .index("by_tokenIdentifier", ["tokenIdentifier"])
+    .index("by_documentId", ["documentId"])
     .vectorIndex("by_embedding", {
       vectorField: "embedding",
       dimensions: 1536,

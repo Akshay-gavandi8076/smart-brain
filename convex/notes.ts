@@ -99,6 +99,7 @@ export const createNote = mutation({
     title: v.string(),
     text: v.string(),
     tags: v.optional(v.string()),
+    documentId: v.optional(v.id("documents")),
   },
 
   async handler(ctx, args) {
@@ -113,6 +114,7 @@ export const createNote = mutation({
       text: args.text,
       tokenIdentifier: userId,
       tags: args.tags || "",
+      documentId: args.documentId,
     });
 
     await ctx.scheduler.runAfter(0, internal.notes.createNoteEmbedding, {
@@ -177,5 +179,19 @@ export const updateNote = mutation({
       title: args.title,
       text: args.text,
     });
+  },
+});
+
+export const getNotesByDocumentId = query({
+  args: {
+    documentId: v.id("documents"),
+  },
+  async handler(ctx, args) {
+    const notes = await ctx.db
+      .query("notes")
+      .filter((q) => q.eq(q.field("documentId"), args.documentId))
+      .order("desc")
+      .collect();
+    return notes;
   },
 });

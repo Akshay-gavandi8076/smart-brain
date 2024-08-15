@@ -22,7 +22,6 @@ export default function NotesPage() {
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
 
-  // Sync the title and text state with the fetched note data
   useEffect(() => {
     if (note) {
       setTitle(note.title);
@@ -30,7 +29,6 @@ export default function NotesPage() {
     }
   }, [note]);
 
-  // Function to check if changes have been made
   const hasChanges = () => {
     return title !== note?.title || text !== note?.text;
   };

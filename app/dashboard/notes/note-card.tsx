@@ -26,7 +26,7 @@ export function NoteCard({ note }: { note: Doc<"notes"> }) {
               <Loader2 className="animate-spin" />
             </div>
           ) : (
-            <>{note.text.substring(0, 90) + "..."}</>
+            <div>{note.text.substring(0, 90) + "..."}</div>
           )}
           {note.tags && <TagsList tags={splitTags(note.tags || "")} />}
         </div>
