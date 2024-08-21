@@ -10,7 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
-import { PlusIcon, Upload } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import { btnIconStyles, btnStyles } from "@/styles/styles";
 import CreateNoteForm from "./create-note-form";
 import { useToast } from "@/components/ui/use-toast";

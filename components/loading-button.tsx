@@ -1,5 +1,4 @@
-import { Button, buttonVariants } from "@/components/ui/button";
-import { VariantProps } from "class-variance-authority";
+import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { MouseEvent, ReactNode } from "react";
 

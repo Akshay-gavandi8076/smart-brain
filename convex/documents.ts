@@ -1,4 +1,3 @@
-// convex/documents.ts
 import {
   MutationCtx,
   QueryCtx,

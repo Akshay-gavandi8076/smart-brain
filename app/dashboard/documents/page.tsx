@@ -1,4 +1,3 @@
-// app/dashboard/documents/page.tsx
 "use client";
 
 import { api } from "@/convex/_generated/api";
