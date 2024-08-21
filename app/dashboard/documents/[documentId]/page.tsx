@@ -133,7 +133,7 @@ export default function DocumentPage({
                     <ChatPanel documentId={document._id} />
                   </TabsContent>
                   <TabsContent value="note">
-                    <div className="h-full w-full rounded-xl bg-zinc-200 p-4 text-black dark:bg-zinc-800 dark:text-white">
+                    <div className="max-h-[730px] w-full overflow-y-auto rounded-xl bg-zinc-50 p-4 text-black dark:bg-zinc-800 dark:text-white">
                       {showNoteForm ? (
                         <NoteForm
                           documentId={document._id}
@@ -158,7 +158,7 @@ export default function DocumentPage({
                           notes.map((note) => (
                             <div
                               key={note._id}
-                              className="mb-2 flex justify-between rounded-lg bg-zinc-200 p-4 shadow-md dark:bg-zinc-900"
+                              className="mb-2 flex justify-between rounded-lg bg-zinc-100 p-4 shadow-md dark:bg-zinc-900"
                             >
                               <p>{note.text}</p>
                               <div className="flex gap-2">

@@ -67,7 +67,7 @@ export default function NoteForm({
       <Textarea
         placeholder="Write your note here"
         {...register("text")}
-        className={`w-full bg-zinc-200 dark:bg-zinc-950 ${errors.text ? "border-red-500" : ""} resize-none`}
+        className={`w-full bg-zinc-100 dark:bg-zinc-950 ${errors.text ? "border-red-500" : ""} resize-none`}
         rows={8}
       />
       {errors.text && <p className="text-red-500">{errors.text.message}</p>}
@@ -76,7 +76,7 @@ export default function NoteForm({
         type="text"
         placeholder="Tags (comma separated)"
         {...register("tags")}
-        className="bg-zinc-200 dark:bg-zinc-950"
+        className="bg-zinc-100 dark:bg-zinc-950"
       />
       <div className="flex justify-between">
         <Button type="submit">Save Note</Button>
