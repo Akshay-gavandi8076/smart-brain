@@ -9,7 +9,7 @@ export default function DashboardLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
+  const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
 
   const toggleSidebar = () => {
     setIsSidebarExpanded(!isSidebarExpanded);
