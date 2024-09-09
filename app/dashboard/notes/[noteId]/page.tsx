@@ -5,12 +5,13 @@ import { api } from "@/convex/_generated/api";
 import { useParams, useRouter } from "next/navigation";
 import { Id } from "@/convex/_generated/dataModel";
 import { DeleteNoteButton } from "./delete-note-button";
-import { ArrowLeft, Save, Edit, X } from "lucide-react";
+import { ArrowLeft, Save, Edit, X, Download } from "lucide-react";
 import { btnIconStyles } from "@/styles/styles";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { TagsList } from "@/components/tags-list";
 import { splitTags } from "@/lib/utils";
+import { generatePDF } from "@/lib/generatePDF";
 
 export default function NotesPage() {
   const { noteId } = useParams<{ noteId: Id<"notes"> }>();
@@ -21,6 +22,7 @@ export default function NotesPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
+  const tags = splitTags(note?.tags || "");
 
   useEffect(() => {
     if (note) {
@@ -44,6 +46,10 @@ export default function NotesPage() {
     setTitle(note?.title || "");
     setText(note?.text || "");
     setIsEditing(false);
+  };
+
+  const handleDownloadPDF = () => {
+    generatePDF(title, tags, text);
   };
 
   return (
@@ -103,6 +109,14 @@ export default function NotesPage() {
               >
                 <Edit className={btnIconStyles} />
                 <span className="hidden sm:inline">Edit</span>
+              </Button>
+              <Button
+                onClick={handleDownloadPDF}
+                variant="outline"
+                className="flex gap-2"
+              >
+                <Download className={btnIconStyles} />
+                <span className="hidden sm:inline">Download PDF</span>
               </Button>
               <DeleteNoteButton noteId={note?._id!} />
             </>
