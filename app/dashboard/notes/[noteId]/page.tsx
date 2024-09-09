@@ -14,10 +14,11 @@ import { splitTags } from "@/lib/utils";
 import { generatePDF } from "@/lib/generatePDF";
 
 export default function NotesPage() {
-  const { noteId } = useParams<{ noteId: Id<"notes"> }>();
-  const note = useQuery(api.notes.getNote, { noteId });
-  const updateNote = useMutation(api.notes.updateNote);
+  const { noteId } = useParams() as { noteId?: Id<"notes"> };
   const router = useRouter();
+
+  const note = useQuery(api.notes.getNote, noteId ? { noteId } : "skip");
+  const updateNote = useMutation(api.notes.updateNote);
 
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState("");
