@@ -13,35 +13,46 @@ import { DeleteDocumentButton } from "./[documentId]/delete-document-button";
 import { TagsList } from "@/components/tags-list";
 import { splitTags } from "@/lib/utils";
 
-export function DocumentCard({ document }: { document: Doc<"documents"> }) {
-  console.log(document);
+interface DocumentCardProps {
+  document: Doc<"documents">;
+}
+
+export function DocumentCard({ document }: DocumentCardProps) {
+  const { title, description, tags, _id } = document;
+
   return (
     <Card className="shadow-[0_10px_10px_rgba(8,_112,_184,_0.7)]">
       <CardHeader>
-        <CardTitle className="text-2xl">{document.title}</CardTitle>
+        <CardTitle className="text-2xl">{title}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-4">
-          {!document.description ? (
-            <div className="flex justify-center">
-              <Loader2 className="animate-spin" />
+          {description ? (
+            <div>
+              {description.length > 90
+                ? `${description.substring(0, 90)}...`
+                : description}
             </div>
           ) : (
-            <div>{document.description.substring(0, 90) + "..."}</div>
+            <div className="flex justify-center">
+              <Loader2
+                className="animate-spin"
+                aria-label="Loading document description"
+              />
+            </div>
           )}
-
-          {document.tags && <TagsList tags={splitTags(document.tags || "")} />}
+          {tags && <TagsList tags={splitTags(tags)} />}
         </div>
       </CardContent>
 
       <CardFooter className="flex justify-between md:gap-2">
         <Button variant="secondary" className="flex items-center gap-2" asChild>
-          <Link href={`/dashboard/documents/${document._id}`}>
+          <Link href={`/dashboard/documents/${_id}`}>
             <Eye className="h-4 w-4" />
             <span className="hidden sm:inline">View</span>
           </Link>
         </Button>
-        <DeleteDocumentButton documentId={document._id} />
+        <DeleteDocumentButton documentId={_id} />
       </CardFooter>
     </Card>
   );

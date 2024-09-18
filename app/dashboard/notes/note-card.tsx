@@ -13,7 +13,11 @@ import { DeleteNoteButton } from "./[noteId]/delete-note-button";
 import { TagsList } from "@/components/tags-list";
 import { splitTags } from "@/lib/utils";
 
-export function NoteCard({ note }: { note: Doc<"notes"> }) {
+interface NoteCardProps {
+  note: Doc<"notes">;
+}
+
+export function NoteCard({ note }: NoteCardProps) {
   return (
     <Card className="shadow-[0_10px_10px_rgba(8,_112,_184,_0.7)]">
       <CardHeader>
@@ -23,10 +27,14 @@ export function NoteCard({ note }: { note: Doc<"notes"> }) {
         <div className="flex flex-col gap-4">
           {!note ? (
             <div className="flex justify-center">
-              <Loader2 className="animate-spin" />
+              <Loader2 className="animate-spin" aria-label="Loading note" />{" "}
             </div>
           ) : (
-            <div>{note.text.substring(0, 90) + "..."}</div>
+            <div>
+              {note.text.length > 90
+                ? `${note.text.substring(0, 90)}...`
+                : note.text}
+            </div>
           )}
           {note.tags && <TagsList tags={splitTags(note.tags || "")} />}
         </div>

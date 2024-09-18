@@ -16,10 +16,14 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
 
-const formSchema = z.object({
-  title: z.string().min(2).max(250),
-  text: z.string().min(2),
+const createNoteFormSchema = z.object({
+  title: z
+    .string()
+    .min(2, "Title must be at least 2 characters")
+    .max(250, "Title must not exceed 250 characters"),
+  text: z.string().min(2, "Description must be at least 2 characters"),
   tags: z.string().optional(),
 });
 
@@ -29,9 +33,10 @@ export default function CreateNoteForm({
   onNoteCreated: () => void;
 }) {
   const createNote = useMutation(api.notes.createNote);
+  const { toast } = useToast();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof createNoteFormSchema>>({
+    resolver: zodResolver(createNoteFormSchema),
     defaultValues: {
       title: "",
       text: "",
@@ -39,14 +44,24 @@ export default function CreateNoteForm({
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    await createNote({
-      title: values.title,
-      text: values.text,
-      tags: values.tags,
-    });
+  async function onSubmit(values: z.infer<typeof createNoteFormSchema>) {
+    try {
+      await createNote({
+        title: values.title,
+        text: values.text,
+        tags: values.tags,
+      });
 
-    onNoteCreated();
+      onNoteCreated();
+      form.reset();
+    } catch (error) {
+      console.error("Error creating a note:", error);
+
+      toast({
+        title: "Error creating note",
+        description: "An error occurred while creating the note.",
+      });
+    }
   }
 
   return (
@@ -57,9 +72,9 @@ export default function CreateNoteForm({
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Title</FormLabel>
+              <FormLabel htmlFor="title">Title</FormLabel>
               <FormControl>
-                <Input placeholder="Expense Report" {...field} />
+                <Input id="title" placeholder="Expense Report" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -71,9 +86,14 @@ export default function CreateNoteForm({
           name="text"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Description</FormLabel>
+              <FormLabel htmlFor="text">Description</FormLabel>
               <FormControl>
-                <Textarea rows={8} placeholder="Your note" {...field} />
+                <Textarea
+                  id="text"
+                  rows={8}
+                  placeholder="Your note"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -85,9 +105,10 @@ export default function CreateNoteForm({
           name="tags"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Tags</FormLabel>
+              <FormLabel htmlFor="tags">Tags</FormLabel>
               <FormControl>
                 <Input
+                  id="tags"
                   placeholder="Enter tags, separated by commas"
                   {...field}
                 />

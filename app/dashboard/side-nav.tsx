@@ -6,8 +6,6 @@ import {
   Search,
   Menu,
   X,
-  MoonIcon,
-  SunIcon,
   Home,
   FilesIcon,
   ClipboardPenIcon,
@@ -17,8 +15,15 @@ import { cn } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useClerk } from "@clerk/nextjs";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
-const sidebarItemsSetOne = [
+interface SidebarItem {
+  name: string;
+  href: string;
+  icon: React.ElementType;
+}
+
+const sidebarItems: SidebarItem[] = [
   { name: "Home", href: "/", icon: Home },
   { name: "Search", href: "/dashboard/search", icon: Search },
   { name: "Documents", href: "/dashboard/documents", icon: FilesIcon },
@@ -41,10 +46,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isExpanded, toggleSidebar }) => {
     setTheme(isDarkMode ? "light" : "dark");
   };
 
-  const handleSignOut = () => {
-    signOut().then(() => {
-      router.push("/");
-    });
+  const handleSignOut = async () => {
+    await signOut();
+    router.push("/");
   };
 
   return (
@@ -65,7 +69,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isExpanded, toggleSidebar }) => {
             </button>
           </div>
           <hr className="my-2 w-full border-t" />
-          {sidebarItemsSetOne.map((item, index) => (
+          {sidebarItems.map((item, index) => (
             <Link key={index} href={item.href} className="w-full">
               <span
                 className={cn(
@@ -78,21 +82,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isExpanded, toggleSidebar }) => {
               </span>
             </Link>
           ))}
-
           <div className="mt-auto w-full">
-            <div
-              onClick={toggleTheme}
-              className="flex w-full cursor-pointer items-center rounded-md p-2 hover:bg-accent hover:text-accent-foreground"
-            >
-              {isDarkMode ? (
-                <SunIcon className="h-5 w-5" />
-              ) : (
-                <MoonIcon className="h-5 w-5" />
-              )}
-              {isExpanded && (
-                <span className="ml-2">{isDarkMode ? "Light" : "Dark"}</span>
-              )}
-            </div>
+            <ThemeToggle
+              isDarkMode={isDarkMode}
+              isExpanded={isExpanded}
+              toggleTheme={toggleTheme}
+            />
             <hr className="my-2 w-full border-t" />
             <div
               onClick={handleSignOut}

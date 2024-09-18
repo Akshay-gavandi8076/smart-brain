@@ -12,31 +12,37 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { LoadingButton } from "@/components/loading-button";
 import { Send } from "lucide-react";
 import { btnIconStyles } from "@/styles/styles";
 
-const formSchema = z.object({
-  text: z.string().min(2).max(250),
+const questionFormSchema = z.object({
+  text: z
+    .string()
+    .min(2, "Question must be at least 2 characters")
+    .max(250, "Question must not exceed 250 characters"),
 });
 
 export function QuestionForm({ documentId }: { documentId: Id<"documents"> }) {
   const askQuestion = useAction(api.documents.askQuestion);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof questionFormSchema>>({
+    resolver: zodResolver(questionFormSchema),
     defaultValues: {
       text: "",
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    await askQuestion({ question: values.text, documentId });
-    form.reset();
-  }
+  const onSubmit = async (values: z.infer<typeof questionFormSchema>) => {
+    try {
+      await askQuestion({ question: values.text, documentId });
+      form.reset();
+    } catch (error) {
+      console.error("Error asking question:", error);
+    }
+  };
 
   return (
     <Form {...form}>
@@ -59,7 +65,6 @@ export function QuestionForm({ documentId }: { documentId: Id<"documents"> }) {
             </FormItem>
           )}
         />
-
         <LoadingButton isLoading={form.formState.isSubmitting} size="icon">
           <Send className={btnIconStyles} />
         </LoadingButton>

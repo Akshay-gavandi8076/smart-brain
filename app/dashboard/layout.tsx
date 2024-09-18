@@ -1,22 +1,19 @@
 "use client";
 
 import { useState } from "react";
-
 import Sidebar from "./side-nav";
 
 export default function DashboardLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
 
-  const toggleSidebar = () => {
-    setIsSidebarExpanded(!isSidebarExpanded);
-  };
+  const toggleSidebar = () => setIsSidebarExpanded((prev) => !prev);
 
   return (
-    <div className="flex h-screen flex-row justify-start">
+    <div className="flex h-screen">
       <aside className="flex-none transition-all duration-300 ease-in-out">
         <Sidebar isExpanded={isSidebarExpanded} toggleSidebar={toggleSidebar} />
       </aside>

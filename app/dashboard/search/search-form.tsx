@@ -17,29 +17,36 @@ import { LoadingButton } from "@/components/loading-button";
 import { Search } from "lucide-react";
 import { btnIconStyles } from "@/styles/styles";
 
-const formSchema = z.object({
-  search: z.string().min(2).max(250),
+const searchFormSchema = z.object({
+  search: z
+    .string()
+    .min(2, "Search term must be at least 2 characters")
+    .max(250, "Search term must not exceed 250 characters"),
 });
 
-export function SearchForm({
-  setResults,
-}: {
+interface SearchFormProps {
   setResults: (notes: typeof api.search.searchAction._returnType) => void;
-}) {
+}
+
+export function SearchForm({ setResults }: SearchFormProps) {
   const searchAction = useAction(api.search.searchAction);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof searchFormSchema>>({
+    resolver: zodResolver(searchFormSchema),
     defaultValues: {
       search: "",
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    await searchAction({ search: values.search }).then(setResults);
-
-    form.reset();
-  }
+  const onSubmit = async (values: z.infer<typeof searchFormSchema>) => {
+    try {
+      const searchResults = await searchAction({ search: values.search });
+      setResults(searchResults);
+      form.reset();
+    } catch (error) {
+      console.error("Error during search:", error);
+    }
+  };
 
   return (
     <Form {...form}>

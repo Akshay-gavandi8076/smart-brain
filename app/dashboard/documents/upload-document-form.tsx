@@ -3,7 +3,6 @@
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-
 import {
   Form,
   FormControl,
@@ -17,47 +16,69 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { LoadingButton } from "@/components/loading-button";
 import { Id } from "@/convex/_generated/dataModel";
+import { useToast } from "@/components/ui/use-toast";
 
-const formSchema = z.object({
-  title: z.string().min(2).max(250),
-  file: z.custom<File>((file) => file instanceof File),
+const uploadDocumentFormSchema = z.object({
+  title: z
+    .string()
+    .min(2, "Title must be at least 2 characters")
+    .max(250, "Title must not exceed 250 characters"),
+  file: z.custom<File>((file) => file instanceof File, {
+    message: "Invalid file",
+  }),
   tags: z.string().optional(),
 });
 
+interface UploadDocumentFormProps {
+  onDocumentUpload: () => void;
+}
+
 export default function UploadDocumentForm({
-  onUpload,
-}: {
-  onUpload: () => void;
-}) {
+  onDocumentUpload,
+}: UploadDocumentFormProps) {
   const createDocument = useMutation(api.documents.createDocument);
   const generateUploadUrl = useMutation(api.documents.generateUploadUrl);
+  const { toast } = useToast();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof uploadDocumentFormSchema>>({
+    resolver: zodResolver(uploadDocumentFormSchema),
     defaultValues: {
       title: "",
       tags: "",
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    const url = await generateUploadUrl();
+  const onSubmit = async (values: z.infer<typeof uploadDocumentFormSchema>) => {
+    try {
+      const url = await generateUploadUrl();
 
-    const result = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": values.file.type },
-      body: values.file,
-    });
+      const result = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": values.file.type },
+        body: values.file,
+      });
 
-    const { storageId } = await result.json();
+      if (!result.ok) {
+        throw new Error("Failed to upload the file");
+      }
 
-    await createDocument({
-      title: values.title,
-      tags: values.tags,
-      fileId: storageId as Id<"_storage">,
-    });
-    onUpload();
-  }
+      const { storageId } = await result.json();
+
+      await createDocument({
+        title: values.title,
+        tags: values.tags,
+        fileId: storageId as Id<"_storage">,
+      });
+
+      onDocumentUpload();
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast({
+        title: "Error uploading document",
+        description: "An error occurred while uploading the document.",
+      });
+    }
+  };
 
   return (
     <Form {...form}>
@@ -67,7 +88,7 @@ export default function UploadDocumentForm({
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Title</FormLabel>
+              <FormLabel htmlFor="title">Title</FormLabel>
               <FormControl>
                 <Input placeholder="Expense Report" {...field} />
               </FormControl>
@@ -81,7 +102,7 @@ export default function UploadDocumentForm({
           name="tags"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Tags</FormLabel>
+              <FormLabel htmlFor="tags">Tags</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Enter tags, separated by commas"
@@ -98,7 +119,7 @@ export default function UploadDocumentForm({
           name="file"
           render={({ field: { value, onChange, ...fieldProps } }) => (
             <FormItem>
-              <FormLabel>File</FormLabel>
+              <FormLabel htmlFor="file">File</FormLabel>
               <FormControl>
                 <Input
                   {...fieldProps}
@@ -106,7 +127,9 @@ export default function UploadDocumentForm({
                   accept=".txt,.xml,.doc"
                   onChange={(event) => {
                     const file = event.target.files?.[0];
-                    onChange(file);
+                    if (file) {
+                      onChange(file);
+                    }
                   }}
                 />
               </FormControl>

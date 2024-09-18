@@ -16,8 +16,16 @@ import CreateNoteForm from "./create-note-form";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function CreateNoteButton() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const { toast } = useToast();
+
+  const handleNoteCreated = () => {
+    setIsOpen(false);
+    toast({
+      title: "Note created",
+      description: "Your note has been created successfully.",
+    });
+  };
 
   return (
     <Dialog onOpenChange={setIsOpen} open={isOpen}>
@@ -29,20 +37,11 @@ export default function CreateNoteButton() {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create a document</DialogTitle>
+          <DialogTitle>Create a Note</DialogTitle>
           <DialogDescription>
             Type whatever you want to be searchable later on.
           </DialogDescription>
-          <CreateNoteForm
-            onNoteCreated={() => {
-              setIsOpen(false);
-
-              toast({
-                title: "Note created",
-                description: "Your note has been created successfully.",
-              });
-            }}
-          />
+          <CreateNoteForm onNoteCreated={handleNoteCreated} />
         </DialogHeader>
       </DialogContent>
     </Dialog>

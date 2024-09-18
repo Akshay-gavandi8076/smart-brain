@@ -14,12 +14,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { btnIconStyles, btnStyles } from "@/styles/styles";
 import { TrashIcon } from "lucide-react";
+import { useToast } from "./ui/use-toast";
 
 type DeleteButtonProps<T> = {
   id: T;
   entityType: "document" | "note";
   onSuccessRedirect: string;
-  onDelete: (args: { id: T }) => Promise<void>; // Expect an object with an id property of type T
+  onDelete: (args: { id: T }) => Promise<void>;
   confirmationMessage: string;
 };
 
@@ -33,15 +34,23 @@ export function DeleteButton<T>({
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+  const { toast } = useToast();
 
   const handleDelete = async () => {
     setIsLoading(true);
     try {
-      await onDelete({ id }); // Pass an object with the id property
+      await onDelete({ id });
       router.push(onSuccessRedirect);
+      toast({
+        title: "Successfully deleted",
+        description: "The item has been deleted successfully.",
+      });
     } catch (error) {
       console.error(`Failed to delete ${entityType}:`, error);
-      // Optionally handle errors and show a user-friendly message
+      toast({
+        title: "Error deleting",
+        description: "An error occurred while deleting the item.",
+      });
     } finally {
       setIsLoading(false);
     }
