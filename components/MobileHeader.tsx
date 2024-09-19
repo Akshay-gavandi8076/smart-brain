@@ -36,7 +36,7 @@ export default function MobileHeader() {
   };
 
   const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
+    setMenuOpen((prev) => !prev);
   };
 
   return (
@@ -48,7 +48,7 @@ export default function MobileHeader() {
             width={25}
             height={25}
             className="rounded"
-            alt="an image of a brain"
+            alt="Smart Brain logo"
           />
         </Link>
         <motion.button
@@ -73,58 +73,23 @@ export default function MobileHeader() {
             <div className="flex flex-col items-start space-y-4 p-4">
               {isSignedIn && (
                 <>
-                  <Link
+                  <NavItem
                     href="/dashboard/documents"
-                    className="flex items-center text-sm font-semibold hover:text-accent-foreground"
+                    icon={<FilesIcon className="mr-2 h-4 w-4" />}
+                    label="Documents"
                     onClick={toggleMenu}
-                  >
-                    <motion.span
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      style={{ display: "flex", alignItems: "center" }}
-                    >
-                      <FilesIcon className="mr-2 h-4 w-4" />
-                      Documents
-                    </motion.span>
-                  </Link>
-                  <Link
+                  />
+                  <NavItem
                     href="/dashboard/notes"
-                    className="flex items-center text-sm font-semibold hover:text-accent-foreground"
+                    icon={<ClipboardPenIcon className="mr-2 h-4 w-4" />}
+                    label="Notes"
                     onClick={toggleMenu}
-                  >
-                    <motion.span
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      style={{ display: "flex", alignItems: "center" }}
-                    >
-                      <ClipboardPenIcon className="mr-2 h-4 w-4" />
-                      Notes
-                    </motion.span>
-                  </Link>
+                  />
                 </>
               )}
               <hr className="my-2 w-full border-t" />
-
-              <motion.div
-                onClick={toggleTheme}
-                className="flex cursor-pointer items-center text-sm font-semibold hover:text-accent-foreground"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {isDarkMode ? (
-                  <>
-                    <SunIcon className="mr-2 h-4 w-4" />
-                    <span>Light</span>
-                  </>
-                ) : (
-                  <>
-                    <MoonIcon className="mr-2 h-4 w-4" />
-                    <span>Dark</span>
-                  </>
-                )}
-              </motion.div>
+              <ThemeToggle isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
               <hr className="my-2 w-full border-t" />
-
               <SignedOut>
                 <SignInButton
                   forceRedirectUrl="/dashboard"
@@ -158,3 +123,49 @@ export default function MobileHeader() {
     </div>
   );
 }
+
+const NavItem: React.FC<{
+  href: string;
+  icon: React.ReactNode;
+  label: string;
+  onClick: () => void;
+}> = ({ href, icon, label, onClick }) => (
+  <Link
+    href={href}
+    className="flex items-center text-sm font-semibold hover:text-accent-foreground"
+    onClick={onClick}
+  >
+    <motion.span
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      style={{ display: "flex", alignItems: "center" }}
+    >
+      {icon}
+      {label}
+    </motion.span>
+  </Link>
+);
+
+const ThemeToggle: React.FC<{
+  isDarkMode: boolean;
+  toggleTheme: () => void;
+}> = ({ isDarkMode, toggleTheme }) => (
+  <motion.div
+    onClick={toggleTheme}
+    className="flex cursor-pointer items-center text-sm font-semibold hover:text-accent-foreground"
+    whileHover={{ scale: 1.05 }}
+    whileTap={{ scale: 0.95 }}
+  >
+    {isDarkMode ? (
+      <>
+        <SunIcon className="mr-2 h-4 w-4" />
+        <span>Light</span>
+      </>
+    ) : (
+      <>
+        <MoonIcon className="mr-2 h-4 w-4" />
+        <span>Dark</span>
+      </>
+    )}
+  </motion.div>
+);

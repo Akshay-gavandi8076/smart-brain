@@ -42,7 +42,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isExpanded, toggleSidebar }) => {
   const isDarkMode = resolvedTheme === "dark";
   const router = useRouter();
 
-  const toggleTheme = () => {
+  const handleThemeToggle = () => {
     setTheme(isDarkMode ? "light" : "dark");
   };
 
@@ -86,7 +86,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isExpanded, toggleSidebar }) => {
             <ThemeToggle
               isDarkMode={isDarkMode}
               isExpanded={isExpanded}
-              toggleTheme={toggleTheme}
+              toggleTheme={handleThemeToggle}
             />
             <hr className="my-2 w-full border-t" />
             <div

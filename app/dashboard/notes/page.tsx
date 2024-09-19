@@ -12,27 +12,47 @@ export default function Home() {
 
   return (
     <main className="w-full space-y-8">
-      <header className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold sm:text-4xl">Notes</h1>
-        <CreateNoteButton />
-      </header>
+      <Header />
 
-      {!notes ? (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {Array.from({ length: 4 }, (_, i) => (
-            <CardSkeleton key={i} />
-          ))}
-        </div>
-      ) : notes.length === 0 ? (
-        <EmptyState />
+      {notes ? (
+        notes.length === 0 ? (
+          <EmptyState />
+        ) : (
+          <NotesGrid notes={notes} />
+        )
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {notes.map((note) => (
-            <NoteCard key={note._id} note={note} />
-          ))}
-        </div>
+        <LoadingState />
       )}
     </main>
+  );
+}
+
+function Header() {
+  return (
+    <header className="flex items-center justify-between">
+      <h1 className="text-2xl font-bold sm:text-4xl">Notes</h1>
+      <CreateNoteButton />
+    </header>
+  );
+}
+
+function LoadingState() {
+  return (
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {Array.from({ length: 4 }, (_, i) => (
+        <CardSkeleton key={i} />
+      ))}
+    </div>
+  );
+}
+
+function NotesGrid({ notes }: { notes: any[] }) {
+  return (
+    <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      {notes.map((note) => (
+        <NoteCard key={note._id} note={note} />
+      ))}
+    </div>
   );
 }
 

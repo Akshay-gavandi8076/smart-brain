@@ -25,7 +25,11 @@ const questionFormSchema = z.object({
     .max(250, "Question must not exceed 250 characters"),
 });
 
-export function QuestionForm({ documentId }: { documentId: Id<"documents"> }) {
+interface QuestionFormProps {
+  documentId: Id<"documents">;
+}
+
+export function QuestionForm({ documentId }: QuestionFormProps) {
   const askQuestion = useAction(api.documents.askQuestion);
 
   const form = useForm<z.infer<typeof questionFormSchema>>({

@@ -1,17 +1,17 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
 import { useParams, useRouter } from "next/navigation";
 import { Id } from "@/convex/_generated/dataModel";
 import { DeleteNoteButton } from "./delete-note-button";
 import { ArrowLeft, Save, Edit, X, Download } from "lucide-react";
 import { btnIconStyles } from "@/styles/styles";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
 import { TagsList } from "@/components/tags-list";
 import { splitTags } from "@/lib/utils";
 import { generatePDF } from "@/lib/generatePDF";
+import { api } from "@/convex/_generated/api";
 
 interface NoteHeaderProps {
   title: string;
@@ -26,7 +26,7 @@ interface NoteHeaderProps {
   noteId: Id<"notes"> | undefined;
 }
 
-function NoteHeader({
+const NoteHeader: React.FC<NoteHeaderProps> = ({
   title,
   isEditing,
   onEdit,
@@ -37,7 +37,7 @@ function NoteHeader({
   tags,
   setTitle,
   noteId,
-}: NoteHeaderProps) {
+}) => {
   const router = useRouter();
 
   return (
@@ -51,7 +51,6 @@ function NoteHeader({
         >
           <ArrowLeft className={btnIconStyles} />
         </Button>
-
         {isEditing ? (
           <input
             type="text"
@@ -106,11 +105,10 @@ function NoteHeader({
       </div>
     </div>
   );
-}
+};
 
 export default function NotesPage() {
   const { noteId } = useParams() as { noteId?: Id<"notes"> };
-
   const note = useQuery(api.notes.getNote, noteId ? { noteId } : "skip");
   const updateNote = useMutation(api.notes.updateNote);
 
@@ -159,7 +157,6 @@ export default function NotesPage() {
         setTitle={setTitle}
         noteId={noteId}
       />
-
       <div className="relative h-[780px] w-full overflow-y-scroll rounded bg-zinc-100 p-4 dark:bg-zinc-900">
         {isEditing ? (
           <textarea

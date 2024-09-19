@@ -19,7 +19,6 @@ import MobileHeader from "@/components/MobileHeader";
 export default function Header() {
   const { setTheme, resolvedTheme } = useTheme();
   const { isSignedIn } = useUser();
-
   const isDarkMode = resolvedTheme === "dark";
 
   const toggleTheme = () => {
@@ -37,14 +36,14 @@ export default function Header() {
                 width={25}
                 height={25}
                 className="rounded"
-                alt="an image of a brain"
+                alt="Smart Brain logo"
               />
               <span className="hidden text-lg font-semibold sm:inline">
                 Smart <span className="text-blue-500">Brain</span>
               </span>
             </Link>
             {isSignedIn && (
-              <div className="flex gap-4">
+              <nav className="flex gap-4">
                 <Link
                   href="/dashboard/documents"
                   className="text-sm font-semibold hover:text-slate-500"
@@ -57,22 +56,22 @@ export default function Header() {
                 >
                   Notes
                 </Link>
-              </div>
+              </nav>
             )}
           </div>
           <div className="flex items-center space-x-4">
             <div
               onClick={toggleTheme}
-              className="flex cursor-pointer items-center rounded-md text-sm font-semibold hover:text-slate-500"
+              className="flex cursor-pointer items-center text-sm font-semibold hover:text-slate-500"
             >
               {isDarkMode ? (
                 <>
-                  <SunIcon className="h-4 w-4 font-semibold" />
+                  <SunIcon className="h-4 w-4" />
                   <span className="ml-2 hidden sm:inline">Light</span>
                 </>
               ) : (
                 <>
-                  <MoonIcon className="h-4 w-4 font-semibold" />
+                  <MoonIcon className="h-4 w-4" />
                   <span className="ml-2 hidden sm:inline">Dark</span>
                 </>
               )}
@@ -101,7 +100,6 @@ export default function Header() {
           </div>
         </div>
       </div>
-
       <MobileHeader />
     </>
   );

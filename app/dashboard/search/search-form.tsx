@@ -63,16 +63,17 @@ export function SearchForm({ setResults }: SearchFormProps) {
                 <Input
                   placeholder="Search over all your notes and documents using vector searching"
                   {...field}
+                  aria-label="Search"
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-
         <LoadingButton
           isLoading={form.formState.isSubmitting}
           loadingText="Searching..."
+          aria-label="Search button"
         >
           <Search className={btnIconStyles} />
           <span className="hidden sm:inline">Search</span>

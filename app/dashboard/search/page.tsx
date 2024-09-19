@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import { SearchForm } from "./search-form";
 import { api } from "@/convex/_generated/api";
 import Link from "next/link";
-import { FileIcon, NotebookPen } from "lucide-react";
+import { FileIcon, NotebookPen, Paintbrush } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { btnIconStyles, btnStyles } from "@/styles/styles";
 
 interface SearchResultProps {
   url: string;
@@ -29,7 +31,7 @@ const SearchResult: React.FC<SearchResultProps> = ({
             ) : (
               <FileIcon className="h-5 w-5" />
             )}
-            <span>{type === "note" ? "Note" : "Document"}</span>
+            <span>{type.charAt(0).toUpperCase() + type.slice(1)}</span>
           </div>
           <div className="rounded-xl bg-zinc-200 p-2 text-sm text-black dark:bg-zinc-700 dark:text-white">
             <span className="hidden sm:inline">Relevancy of</span>{" "}
@@ -61,29 +63,45 @@ export default function SearchPage() {
     localStorage.setItem("searchResults", JSON.stringify(searchResult));
   };
 
+  const handleClearResults = () => {
+    setResults(null);
+    localStorage.removeItem("searchResults");
+  };
+
   return (
     <main className="w-full space-y-8">
-      <div className="flex items-center justify-between">
+      <header className="flex items-center justify-between">
         <h1 className="text-2xl font-bold sm:text-4xl">Search</h1>
-      </div>
+        {results && (
+          <Button
+            variant="destructive"
+            onClick={handleClearResults}
+            className={btnStyles}
+          >
+            <Paintbrush className={btnIconStyles} />
+            <span className="hidden sm:inline">Clear</span>
+          </Button>
+        )}
+      </header>
 
       <SearchForm setResults={handleSearchResultsUpdate} />
 
       <ul className="flex flex-col gap-4">
         {results?.map((result, index) => {
           const { type, record } = result;
-          const isNote = type === "notes";
-          const url = isNote
-            ? `/dashboard/notes/${record._id}`
-            : `/dashboard/documents/${record._id}`;
-          const displayText = isNote
-            ? record.text
-            : `${record.title} ${record.description}`;
+          const url =
+            type === "notes"
+              ? `/dashboard/notes/${record._id}`
+              : `/dashboard/documents/${record._id}`;
+          const displayText =
+            type === "notes"
+              ? record.text
+              : `${record.title} ${record.description}`;
 
           return (
             <SearchResult
-              key={index}
-              type={isNote ? "note" : "document"}
+              key={record._id}
+              type={type === "notes" ? "note" : "document"}
               url={url}
               score={result.score}
               text={displayText}
