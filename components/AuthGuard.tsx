@@ -5,14 +5,14 @@ import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 
 const AuthGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isSignedIn } = useUser();
+  const { isSignedIn, user } = useUser();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isSignedIn) {
+    if (!isSignedIn && user !== undefined) {
       router.push("/");
     }
-  }, [isSignedIn, router]);
+  }, [isSignedIn, user, router]);
 
   if (!isSignedIn) {
     return <div>Loading...</div>;
