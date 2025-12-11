@@ -9,6 +9,7 @@ Welcome to **Smart Brain** – your intelligent solution for efficient document 
 - [Future Implementations](#future-implementations)
 - [Screenshots](#screenshots)
 - [Environment Variables](#environment-variables)
+- [Run Locally](#run-locally)
 
 ## Technologies Used
 
@@ -54,3 +55,41 @@ NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
 
 CLERK_SECRET_KEY=
 ```
+
+## Run Locally
+
+Follow the steps below to set up and run Smart Brain in your local environment.
+
+### 1. Install Dependencies
+
+Make sure all required packages are installed:
+
+```bash
+yarn install
+```
+
+### 2. Start the Next.js Development Server
+
+This command launches the frontend:
+
+```bash
+yarn dev
+```
+
+### 3. Start the Convex Development Server
+
+This command launches the frontend:
+
+```bash
+npx convex dev
+```
+
+### Important Information
+
+Running `npx convex dev` for the first time may:
+
+- Ask you to log in to your Convex account (your browser will open automatically)
+- Generate a new Convex deployment
+- Provide required environment variables:
+  - `CONVEX_DEPLOYMENT`
+  - `NEXT_PUBLIC_CONVEX_URL`
