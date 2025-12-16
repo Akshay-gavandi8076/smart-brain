@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 
 const formSchema = z.object({
   text: z.string().min(2).max(5000),
@@ -29,6 +30,7 @@ export default function NoteForm({
   onNoteCreated: () => void;
 }) {
   const createNote = useMutation(api.notes.createNote);
+  const [submitting, setSubmitting] = useState(false); // <-- new state
 
   const {
     register,
@@ -45,6 +47,9 @@ export default function NoteForm({
   });
 
   const onSubmit = async (values: FormValues) => {
+    if (submitting) return; // prevent multiple submissions
+    setSubmitting(true);
+
     try {
       await createNote({
         title: documentTitle,
@@ -57,6 +62,8 @@ export default function NoteForm({
       reset();
     } catch (error) {
       console.error("Failed to create note", error);
+    } finally {
+      setSubmitting(false); // reset after success/failure
     }
   };
 
@@ -65,8 +72,11 @@ export default function NoteForm({
       <Textarea
         placeholder="Write your note here"
         {...register("text")}
-        className={`w-full bg-zinc-100 dark:bg-zinc-950 ${errors.text ? "border-red-500" : ""} resize-none`}
+        className={`w-full bg-zinc-100 dark:bg-zinc-950 ${
+          errors.text ? "border-red-500" : ""
+        } resize-none`}
         rows={8}
+        disabled={submitting} // disable textarea while submitting
       />
       {errors.text && <p className="text-red-500">{errors.text.message}</p>}
 
@@ -75,10 +85,18 @@ export default function NoteForm({
         placeholder="Tags (comma separated)"
         {...register("tags")}
         className="bg-zinc-100 dark:bg-zinc-950"
+        disabled={submitting} // disable input while submitting
       />
       <div className="flex justify-between">
-        <Button type="submit">Save Note</Button>
-        <Button type="button" onClick={onClose} variant="outline">
+        <Button type="submit" disabled={submitting}>
+          {submitting ? "Saving..." : "Save Note"} {/* Show saving state */}
+        </Button>
+        <Button
+          type="button"
+          onClick={onClose}
+          variant="outline"
+          disabled={submitting}
+        >
           Cancel
         </Button>
       </div>

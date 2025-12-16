@@ -18,6 +18,7 @@ export default function ChatPanel({ documentId }: ChatPanelProps) {
   const [copiedText, setCopiedText] = useState<string | null>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
+  // Scroll to bottom when chats change
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop =
@@ -33,11 +34,9 @@ export default function ChatPanel({ documentId }: ChatPanelProps) {
   };
 
   return (
-    <div className="flex flex-col gap-2 rounded-xl p-2 dark:bg-zinc-800">
-      <div
-        ref={chatContainerRef}
-        className="h-[670px] space-y-2 overflow-y-auto"
-      >
+    <div className="flex h-full flex-col rounded-xl p-2 dark:bg-zinc-800">
+      {/* Messages container */}
+      <div ref={chatContainerRef} className="flex-1 space-y-2 overflow-y-auto">
         {chats?.map((chat) => (
           <ChatMessage
             key={chat._id}
@@ -48,7 +47,11 @@ export default function ChatPanel({ documentId }: ChatPanelProps) {
           />
         ))}
       </div>
-      <QuestionForm documentId={documentId} />
+
+      {/* Input form */}
+      <div className="mt-2">
+        <QuestionForm documentId={documentId} />
+      </div>
     </div>
   );
 }
