@@ -1,8 +1,10 @@
-export default {
+const authConfig = {
   providers: [
     {
-      domain: 'https://central-buffalo-73.clerk.accounts.dev/',
-      applicationID: 'convex',
+      domain: process.env.CLERK_DOMAIN || process.env.NEXT_PUBLIC_CLERK_DOMAIN,
+      applicationID: "convex",
     },
   ],
-}
+};
+
+export default authConfig;
