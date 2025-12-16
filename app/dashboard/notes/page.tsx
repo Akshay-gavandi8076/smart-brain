@@ -3,6 +3,7 @@
 import { useQuery } from "convex/react";
 import CreateNoteButton from "./create-note-button";
 import { api } from "@/convex/_generated/api";
+import { Doc } from "@/convex/_generated/dataModel";
 import Image from "next/image";
 import { NoteCard } from "./note-card";
 import { CardSkeleton } from "@/components/CardSkeleton";
@@ -46,7 +47,7 @@ function LoadingState() {
   );
 }
 
-function NotesGrid({ notes }: { notes: any[] }) {
+function NotesGrid({ notes }: { notes: Doc<"notes">[] }) {
   return (
     <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
       {notes.map((note) => (

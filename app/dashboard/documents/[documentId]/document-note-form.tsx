@@ -26,7 +26,7 @@ export default function NoteForm({
   documentId: Id<"documents">;
   documentTitle: string;
   onClose: () => void;
-  onNoteCreated: (note: any) => void;
+  onNoteCreated: () => void;
 }) {
   const createNote = useMutation(api.notes.createNote);
 
@@ -46,15 +46,13 @@ export default function NoteForm({
 
   const onSubmit = async (values: FormValues) => {
     try {
-      const newNote = await createNote({
+      await createNote({
         title: documentTitle,
         text: values.text,
         tags: values.tags,
         documentId,
       });
-      if (newNote) {
-        onNoteCreated(newNote);
-      }
+      onNoteCreated();
       onClose();
       reset();
     } catch (error) {

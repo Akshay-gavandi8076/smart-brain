@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "convex/react";
-import { Id } from "@/convex/_generated/dataModel";
+import { Id, Doc } from "@/convex/_generated/dataModel";
 import ChatPanel from "./chat-panel";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DeleteDocumentButton } from "./delete-document-button";
@@ -26,6 +26,8 @@ import { splitTags } from "@/lib/utils";
 import { api } from "@/convex/_generated/api";
 import NoteForm from "./document-note-form";
 
+type DocumentWithUrl = Doc<"documents"> & { documentUrl: string | null };
+
 export default function DocumentPage({
   params,
 }: {
@@ -35,12 +37,11 @@ export default function DocumentPage({
     documentId: params.documentId,
   });
 
-  const deleteNote: (params: { noteId: Id<"notes"> }) => Promise<void> =
-    useMutation(api.notes.deleteNote) as any;
+  const deleteNote = useMutation(api.notes.deleteNote);
 
   const [isMinimized, setIsMinimized] = useState(false);
   const [showNoteForm, setShowNoteForm] = useState(false);
-  const [notes, setNotes] = useState<any[]>([]);
+  const [notes, setNotes] = useState<Doc<"notes">[]>([]);
   const router = useRouter();
 
   const fetchedNotes = useQuery(api.notes.getNotesByDocumentId, {
@@ -79,7 +80,13 @@ export default function DocumentPage({
   );
 }
 
-function Header({ document, onBack }: { document: any; onBack: () => void }) {
+function Header({
+  document,
+  onBack,
+}: {
+  document: DocumentWithUrl;
+  onBack: () => void;
+}) {
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center justify-between gap-4">
@@ -103,7 +110,7 @@ function DocumentViewer({
   document,
   isMinimized,
 }: {
-  document: any;
+  document: DocumentWithUrl;
   isMinimized: boolean;
 }) {
   return (
@@ -134,10 +141,10 @@ function Sidebar({
   toggleMinimize: () => void;
   showNoteForm: boolean;
   setShowNoteForm: (show: boolean) => void;
-  notes: any[];
-  deleteNote: (params: { noteId: Id<"notes"> }) => Promise<void>;
-  document: any;
-  router: any;
+  notes: Doc<"notes">[];
+  deleteNote: (params: { noteId: Id<"notes"> }) => Promise<null>;
+  document: DocumentWithUrl;
+  router: ReturnType<typeof useRouter>;
 }) {
   return (
     <div
@@ -198,10 +205,10 @@ function NoteSection({
 }: {
   showNoteForm: boolean;
   setShowNoteForm: (show: boolean) => void;
-  notes: any[];
-  deleteNote: (params: { noteId: Id<"notes"> }) => Promise<void>;
-  document: any;
-  router: any;
+  notes: Doc<"notes">[];
+  deleteNote: (params: { noteId: Id<"notes"> }) => Promise<null>;
+  document: DocumentWithUrl;
+  router: ReturnType<typeof useRouter>;
 }) {
   return (
     <div className="max-h-[730px] w-full overflow-y-auto rounded-xl bg-zinc-50 p-4 text-black dark:bg-zinc-800 dark:text-white">
