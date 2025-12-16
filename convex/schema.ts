@@ -23,6 +23,7 @@ export default defineSchema({
     tokenIdentifier: v.string(),
     tags: v.optional(v.string()),
     documentId: v.optional(v.id("documents")),
+    updatedAt: v.optional(v.number()),
   })
     .index("by_tokenIdentifier", ["tokenIdentifier"])
     .index("by_documentId", ["documentId"])

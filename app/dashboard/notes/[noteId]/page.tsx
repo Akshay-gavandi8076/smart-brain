@@ -12,6 +12,7 @@ import { TagsList } from "@/components/tags-list";
 import { splitTags } from "@/lib/utils";
 import { generatePDF } from "@/lib/generatePDF";
 import { api } from "@/convex/_generated/api";
+import { Textarea } from "@/components/ui/textarea";
 
 interface NoteHeaderProps {
   title: string;
@@ -144,30 +145,39 @@ export default function NotesPage() {
   };
 
   return (
-    <main className="h-full w-full space-y-8">
-      <NoteHeader
-        title={title}
-        isEditing={isEditing}
-        onEdit={() => setIsEditing(true)}
-        onSave={handleSave}
-        onCancel={handleCancel}
-        hasChanges={hasChanges}
-        handleDownloadPDF={handleDownloadPDF}
-        tags={note?.tags}
-        setTitle={setTitle}
-        noteId={noteId}
-      />
-      <div className="relative h-[780px] w-full overflow-y-scroll rounded bg-zinc-100 p-4 dark:bg-zinc-900">
-        {isEditing ? (
-          <textarea
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            className="h-full w-full resize-none whitespace-pre-line border border-zinc-400 bg-transparent p-2 dark:border-zinc-600"
-            placeholder="Enter note text"
-          />
-        ) : (
-          <div className="whitespace-pre-line pr-8">{text}</div>
-        )}
+    <main className="flex h-screen w-full">
+      <div className="flex flex-1 flex-col">
+        <div className="relative flex flex-1 flex-col">
+          <div className="sticky top-0 z-20 bg-zinc-50 p-4 shadow-md dark:bg-zinc-950">
+            <NoteHeader
+              title={title}
+              isEditing={isEditing}
+              onEdit={() => setIsEditing(true)}
+              onSave={handleSave}
+              onCancel={handleCancel}
+              hasChanges={hasChanges}
+              handleDownloadPDF={handleDownloadPDF}
+              tags={note?.tags}
+              setTitle={setTitle}
+              noteId={noteId}
+            />
+          </div>
+
+          <div className="flex-1 overflow-auto rounded-b bg-zinc-100 p-4 dark:bg-zinc-900">
+            {isEditing ? (
+              <Textarea
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                className="h-full w-full resize-none whitespace-pre-line bg-transparent outline-none"
+                placeholder="Enter note text"
+              />
+            ) : (
+              <div className="min-h-full w-full whitespace-pre-line">
+                {text}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </main>
   );
