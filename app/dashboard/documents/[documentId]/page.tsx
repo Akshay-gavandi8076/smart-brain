@@ -120,7 +120,7 @@ export default function DocumentPage({
   }
 
   return (
-    <main className="flex h-screen w-full flex-col space-y-8 overflow-hidden">
+    <main className="flex h-full w-full flex-col space-y-8 overflow-hidden">
       <Header document={document} onBack={() => router.back()} />
       <div className="flex gap-6">
         <DocumentViewer
@@ -187,7 +187,7 @@ function DocumentViewer({
 }) {
   return (
     <div
-      className={`transition-all duration-300 ease-in-out ${
+      className={`mt-6 transition-all duration-300 ease-in-out ${
         isMinimized ? "w-full" : "w-1/2"
       } rounded-xl bg-zinc-200 p-2 dark:bg-zinc-800`}
       style={{ height: windowHeight, overflow: "auto" }}
@@ -195,6 +195,9 @@ function DocumentViewer({
       {document.documentUrl && (
         <iframe
           className="h-full w-full rounded-xl"
+          style={{
+            zoom: 1.5,
+          }}
           src={document.documentUrl}
         />
       )}
