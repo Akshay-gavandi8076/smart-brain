@@ -15,7 +15,7 @@ import { Upload } from "lucide-react";
 import { btnIconStyles, btnStyles } from "@/styles/styles";
 import { useToast } from "@/components/ui/use-toast";
 
-export default function UploadeDocumentButton() {
+export default function UploadDocumentButton() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { toast } = useToast();
 

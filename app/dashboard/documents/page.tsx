@@ -3,7 +3,7 @@
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
 import { DocumentCard } from "./document-card";
-import UploadeDocumentButton from "./upload-document-button";
+import UploadDocumentButton from "./upload-document-button";
 import Image from "next/image";
 import { CardSkeleton } from "@/components/CardSkeleton";
 
@@ -14,7 +14,7 @@ export default function Home() {
     <main className="space-y-8">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold sm:text-4xl">My Documents</h1>
-        <UploadeDocumentButton />
+        <UploadDocumentButton />
       </div>
 
       {!documents ? (
@@ -32,7 +32,7 @@ export default function Home() {
             alt="No documents"
           />
           <h2 className="text-2xl">You have no documents</h2>
-          <UploadeDocumentButton />
+          <UploadDocumentButton />
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">

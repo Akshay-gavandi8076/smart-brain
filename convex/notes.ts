@@ -24,7 +24,9 @@ export const getNote = query({
     const note = await ctx.db.get(args.noteId);
     if (!note || note.tokenIdentifier !== userId) return null;
 
-    return note;
+    const document = note.documentId ? await ctx.db.get(note.documentId) : null;
+
+    return { ...note, document };
   },
 });
 
@@ -139,6 +141,7 @@ export const updateNote = mutation({
     noteId: v.id("notes"),
     title: v.string(),
     text: v.string(),
+    tags: v.optional(v.string()),
   },
   async handler(ctx, args) {
     const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
@@ -151,7 +154,8 @@ export const updateNote = mutation({
     await ctx.db.patch(args.noteId, {
       title: args.title,
       text: args.text,
-      updatedAt: Date.now(), // update timestamp
+      tags: args.tags,
+      updatedAt: Date.now(),
     });
   },
 });

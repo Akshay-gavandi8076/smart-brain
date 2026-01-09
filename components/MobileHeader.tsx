@@ -1,3 +1,4 @@
+// components\MobileHeader.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -64,13 +65,27 @@ export default function MobileHeader() {
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            className="fixed inset-x-0 top-14 z-40 bg-white shadow-md dark:bg-black sm:hidden"
+            className="fixed inset-x-0 top-14 z-40 overflow-hidden bg-white shadow-md dark:bg-black sm:hidden"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
           >
-            <div className="flex flex-col items-start space-y-4 p-4">
+            <motion.div
+              className="flex flex-col items-start space-y-4 p-4"
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              variants={{
+                hidden: {},
+                visible: {
+                  transition: {
+                    staggerChildren: 0.05,
+                    delayChildren: 0.05,
+                  },
+                },
+              }}
+            >
               {isSignedIn && (
                 <>
                   <NavItem
@@ -87,9 +102,13 @@ export default function MobileHeader() {
                   />
                 </>
               )}
+
               <hr className="my-2 w-full border-t" />
+
               <ThemeToggle isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+
               <hr className="my-2 w-full border-t" />
+
               <SignedOut>
                 <SignInButton
                   forceRedirectUrl="/dashboard"
@@ -101,22 +120,18 @@ export default function MobileHeader() {
                     variant="outline"
                   >
                     <LogIn className="mr-2 h-4 w-4" />
-                    <motion.span
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      Sign In
-                    </motion.span>
+                    Sign In
                   </Button>
                 </SignInButton>
               </SignedOut>
+
               <SignedIn>
                 <Authenticated>
                   <UserButton showName />
                 </Authenticated>
                 <AuthLoading>Loading...</AuthLoading>
               </SignedIn>
-            </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
