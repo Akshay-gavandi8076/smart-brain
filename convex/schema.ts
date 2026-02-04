@@ -52,5 +52,6 @@ export default defineSchema({
     usageCount: v.optional(v.number()),
   })
     .index("by_tokenIdentifier", ["tokenIdentifier"])
-    .index("by_normalized", ["normalized", "tokenIdentifier"]),
+    .index("by_normalized", ["normalized", "tokenIdentifier"])
+    .index("by_user_normalized", ["tokenIdentifier", "normalized"]),
 });

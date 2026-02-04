@@ -80,8 +80,6 @@ yarn dev
 
 ### 3. Start the Convex Development Server
 
-This command launches the frontend:
-
 ```bash
 npx convex dev
 ```
