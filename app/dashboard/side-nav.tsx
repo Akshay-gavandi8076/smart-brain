@@ -9,6 +9,7 @@ import {
   Home,
   FilesIcon,
   ClipboardPenIcon,
+  BriefcaseBusinessIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -28,6 +29,7 @@ const sidebarItems: SidebarItem[] = [
   { name: "Search", href: "/dashboard/search", icon: Search },
   { name: "Documents", href: "/dashboard/documents", icon: FilesIcon },
   { name: "Notes", href: "/dashboard/notes", icon: ClipboardPenIcon },
+  { name: "Jobs", href: "/dashboard/jobs", icon: BriefcaseBusinessIcon },
 ];
 
 interface SidebarProps {

@@ -54,4 +54,27 @@ export default defineSchema({
     .index("by_tokenIdentifier", ["tokenIdentifier"])
     .index("by_normalized", ["normalized", "tokenIdentifier"])
     .index("by_user_normalized", ["tokenIdentifier", "normalized"]),
+
+  /** Jobs Schema */
+  jobs: defineTable({
+    company: v.string(),
+    title: v.string(),
+
+    status: v.union(
+      v.literal("applied"),
+      v.literal("interview"),
+      v.literal("offer"),
+      v.literal("rejected"),
+      v.literal("archived"),
+    ),
+
+    link: v.optional(v.string()),
+    location: v.optional(v.string()),
+    notes: v.optional(v.string()),
+
+    tokenIdentifier: v.string(),
+    createdAt: v.number(),
+  })
+    .index("by_token", ["tokenIdentifier"])
+    .index("by_token_status", ["tokenIdentifier", "status"]),
 });

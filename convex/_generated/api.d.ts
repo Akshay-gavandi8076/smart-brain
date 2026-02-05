@@ -16,6 +16,7 @@ import type {
 } from "convex/server";
 import type * as chats from "../chats.js";
 import type * as documents from "../documents.js";
+import type * as jobs from "../jobs.js";
 import type * as notes from "../notes.js";
 import type * as search from "../search.js";
 import type * as tags from "../tags.js";
@@ -31,6 +32,7 @@ import type * as tags from "../tags.js";
 declare const fullApi: ApiFromModules<{
   chats: typeof chats;
   documents: typeof documents;
+  jobs: typeof jobs;
   notes: typeof notes;
   search: typeof search;
   tags: typeof tags;

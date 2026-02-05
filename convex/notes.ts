@@ -73,7 +73,7 @@ export const getNotes = query({
 /* ---------------------------------------------
    EMBEDDING HELPERS (unchanged)
 --------------------------------------------- */
-async function embed(text: string) {
+export async function embed(text: string) {
   const embedding = await openai.embeddings.create({
     model: "text-embedding-ada-002",
     input: text,
