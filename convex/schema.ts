@@ -74,6 +74,7 @@ export default defineSchema({
 
     tokenIdentifier: v.string(),
     createdAt: v.number(),
+    movedAt: v.number(),
   })
     .index("by_token", ["tokenIdentifier"])
     .index("by_token_status", ["tokenIdentifier", "status"]),

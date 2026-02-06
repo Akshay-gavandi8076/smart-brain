@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import Link from "next/link";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -13,7 +14,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Trash2, ChevronDown } from "lucide-react";
+import { ExternalLink, Trash2, ChevronDown, GripVertical } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -33,7 +34,7 @@ const STATUS_OPTIONS = [
   { value: "archived", label: "Archived" },
 ] as const;
 
-/* Status color system (left border only now) */
+/* Status color system (left border only) */
 const STATUS_BORDERS = {
   applied: "border-l-blue-500",
   interview: "border-l-amber-500",
@@ -42,7 +43,15 @@ const STATUS_BORDERS = {
   archived: "border-l-zinc-400",
 } as const;
 
-export default function JobCard({ job }: { job: Doc<"jobs"> }) {
+type DragHandleProps = React.HTMLAttributes<HTMLButtonElement>;
+
+export default function JobCard({
+  job,
+  dragHandleProps,
+}: {
+  job: Doc<"jobs">;
+  dragHandleProps?: DragHandleProps;
+}) {
   const updateStatus = useMutation(api.jobs.updateJobStatus);
   const deleteJob = useMutation(api.jobs.deleteJob);
 
@@ -52,14 +61,27 @@ export default function JobCard({ job }: { job: Doc<"jobs"> }) {
   return (
     <Card
       className={cn(
-        "border-l-2 shadow-sm transition-all hover:shadow-md",
+        "border-l-2 shadow-sm transition-shadow hover:shadow-md",
         STATUS_BORDERS[job.status],
       )}
     >
       <CardHeader className="space-y-1">
-        <CardTitle className="text-base">{job.title}</CardTitle>
+        <div className="flex items-start gap-2">
+          {/* ✅ Drag handle ONLY (premium kanban) */}
+          <button
+            type="button"
+            aria-label="Drag job"
+            className="mt-0.5 rounded-md p-1 text-muted-foreground hover:bg-accent"
+            {...dragHandleProps}
+          >
+            <GripVertical className="h-4 w-4" />
+          </button>
 
-        <div className="text-sm text-muted-foreground">{job.company}</div>
+          <div className="min-w-0 flex-1">
+            <CardTitle className="truncate text-base">{job.title}</CardTitle>
+            <div className="text-sm text-muted-foreground">{job.company}</div>
+          </div>
+        </div>
       </CardHeader>
 
       <CardContent className="space-y-2">

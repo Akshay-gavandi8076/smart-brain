@@ -1,87 +1,100 @@
+// convex\jobs.ts
 import { ConvexError, v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
-const statusValidator = v.union(
-  v.literal("applied"),
-  v.literal("interview"),
-  v.literal("offer"),
-  v.literal("rejected"),
-  v.literal("archived"),
-);
+/**
+ * JOBS
+ * - tokenIdentifier is the user key (same pattern as your notes/documents)
+ * - movedAt is used for “newest moved first” ordering within a status
+ */
 
-// ✅ Get all jobs for current user
 export const getJobs = query({
+  args: {},
   async handler(ctx) {
     const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
-    if (!userId) return [];
+    if (!userId) return null;
 
     const jobs = await ctx.db
       .query("jobs")
       .withIndex("by_token", (q) => q.eq("tokenIdentifier", userId))
-      .order("desc")
       .collect();
 
-    // newest first
-    jobs.sort(
-      (a, b) =>
-        (b.createdAt ?? b._creationTime) - (a.createdAt ?? a._creationTime),
-    );
+    // Newest first: movedAt if present, else createdAt
+    jobs.sort((a, b) => {
+      const at = (a.movedAt ?? a.createdAt) as number;
+      const bt = (b.movedAt ?? b.createdAt) as number;
+      return bt - at;
+    });
+
     return jobs;
   },
 });
 
-// ✅ Get single job
-export const getJob = query({
-  args: { jobId: v.id("jobs") },
-  async handler(ctx, args) {
-    const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
-    if (!userId) return null;
-
-    const job = await ctx.db.get(args.jobId);
-    if (!job || job.tokenIdentifier !== userId) return null;
-
-    return job;
-  },
-});
-
-// ✅ Create job
 export const createJob = mutation({
   args: {
     company: v.string(),
     title: v.string(),
-    status: statusValidator,
-    location: v.optional(v.string()),
+    status: v.union(
+      v.literal("applied"),
+      v.literal("interview"),
+      v.literal("offer"),
+      v.literal("rejected"),
+      v.literal("archived"),
+    ),
     link: v.optional(v.string()),
+    location: v.optional(v.string()),
     notes: v.optional(v.string()),
   },
   async handler(ctx, args) {
     const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
     if (!userId) throw new ConvexError("User not found");
 
-    const jobId = await ctx.db.insert("jobs", {
-      tokenIdentifier: userId,
+    const now = Date.now();
+
+    return await ctx.db.insert("jobs", {
       company: args.company,
       title: args.title,
       status: args.status,
-      location: args.location,
       link: args.link,
+      location: args.location,
       notes: args.notes,
-      createdAt: Date.now(),
+      tokenIdentifier: userId,
+      createdAt: now,
+      movedAt: now, // initial ordering uses movedAt too
     });
-
-    return jobId;
   },
 });
 
-// ✅ Update full job (EDIT modal uses this)
+export const deleteJob = mutation({
+  args: {
+    jobId: v.id("jobs"),
+  },
+  async handler(ctx, args) {
+    const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
+    if (!userId) throw new ConvexError("User not found");
+
+    const job = await ctx.db.get(args.jobId);
+    if (!job) throw new ConvexError("Job not found");
+    if (job.tokenIdentifier !== userId) throw new ConvexError("Unauthorized");
+
+    await ctx.db.delete(args.jobId);
+  },
+});
+
 export const updateJob = mutation({
   args: {
     jobId: v.id("jobs"),
     company: v.string(),
     title: v.string(),
-    status: statusValidator,
-    location: v.optional(v.string()),
+    status: v.union(
+      v.literal("applied"),
+      v.literal("interview"),
+      v.literal("offer"),
+      v.literal("rejected"),
+      v.literal("archived"),
+    ),
     link: v.optional(v.string()),
+    location: v.optional(v.string()),
     notes: v.optional(v.string()),
   },
   async handler(ctx, args) {
@@ -96,18 +109,25 @@ export const updateJob = mutation({
       company: args.company,
       title: args.title,
       status: args.status,
-      location: args.location,
       link: args.link,
+      location: args.location,
       notes: args.notes,
+      // don't touch movedAt here; only moveJob / status move should set it
     });
-
-    return null;
   },
 });
 
-// ✅ Update only status (kanban dropdown uses this)
 export const updateJobStatus = mutation({
-  args: { jobId: v.id("jobs"), status: statusValidator },
+  args: {
+    jobId: v.id("jobs"),
+    status: v.union(
+      v.literal("applied"),
+      v.literal("interview"),
+      v.literal("offer"),
+      v.literal("rejected"),
+      v.literal("archived"),
+    ),
+  },
   async handler(ctx, args) {
     const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
     if (!userId) throw new ConvexError("User not found");
@@ -116,14 +136,29 @@ export const updateJobStatus = mutation({
     if (!job) throw new ConvexError("Job not found");
     if (job.tokenIdentifier !== userId) throw new ConvexError("Unauthorized");
 
-    await ctx.db.patch(args.jobId, { status: args.status });
-    return null;
+    await ctx.db.patch(args.jobId, {
+      status: args.status,
+      movedAt: Date.now(), // treat status change as “latest move”
+    });
   },
 });
 
-// ✅ Delete
-export const deleteJob = mutation({
-  args: { jobId: v.id("jobs") },
+/**
+ * ✅ Needed for drag-and-drop column moves
+ * Set status + movedAt (newest move first)
+ */
+export const moveJob = mutation({
+  args: {
+    jobId: v.id("jobs"),
+    status: v.union(
+      v.literal("applied"),
+      v.literal("interview"),
+      v.literal("offer"),
+      v.literal("rejected"),
+      v.literal("archived"),
+    ),
+    movedAt: v.number(),
+  },
   async handler(ctx, args) {
     const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
     if (!userId) throw new ConvexError("User not found");
@@ -132,7 +167,9 @@ export const deleteJob = mutation({
     if (!job) throw new ConvexError("Job not found");
     if (job.tokenIdentifier !== userId) throw new ConvexError("Unauthorized");
 
-    await ctx.db.delete(args.jobId);
-    return null;
+    await ctx.db.patch(args.jobId, {
+      status: args.status,
+      movedAt: args.movedAt,
+    });
   },
 });

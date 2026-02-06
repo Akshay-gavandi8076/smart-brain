@@ -113,7 +113,7 @@ export default function EditJobForm({
             <FormItem>
               <FormLabel>Company</FormLabel>
               <FormControl>
-                <Input placeholder="Operayo" {...field} />
+                <Input placeholder="Google" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -134,7 +134,6 @@ export default function EditJobForm({
           )}
         />
 
-        {/* Status dropdown-menu (shadcn) */}
         <FormField
           control={form.control}
           name="status"

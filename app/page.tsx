@@ -112,7 +112,7 @@ export default function LandingPage() {
           */}
           {isSignedIn ? (
             <Link
-              href="/dashboard/documents"
+              href="/dashboard/jobs"
               className={buttonVariants({
                 size: "lg",
                 variant: "newButton",
@@ -124,8 +124,8 @@ export default function LandingPage() {
           ) : (
             <SignInButton
               mode="modal"
-              forceRedirectUrl="/dashboard/documents"
-              signUpForceRedirectUrl="/dashboard/documents"
+              forceRedirectUrl="/dashboard/jobs"
+              signUpForceRedirectUrl="/dashboard/jobs"
             >
               <Button variant="newButton" size="lg">
                 Get started <ArrowRight className="ml-2 h-5 w-5" />
