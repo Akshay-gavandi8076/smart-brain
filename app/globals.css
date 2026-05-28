@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ================================
+   Base Layout
+================================ */
 html,
 body,
 :root {
@@ -9,6 +12,32 @@ body,
   width: 100%;
 }
 
+/* Improve scroll behavior like modern SaaS apps */
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+/* Prevent weird horizontal scroll issues */
+body {
+  overflow-x: hidden;
+}
+
+/* Better text selection (Notion-like feel) */
+::selection {
+  background-color: rgba(59, 130, 246, 0.25);
+}
+
+/* ================================
+   Design Tokens (Light Theme)
+================================ */
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -42,6 +71,9 @@ body,
     --radius: 0.5rem;
   }
 
+  /* ================================
+     Dark Theme
+  ================================= */
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
@@ -73,11 +105,41 @@ body,
   }
 }
 
+/* ================================
+   Global Base Styles
+================================ */
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Better focus visibility (keyboard navigation) */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+
+  /* Remove default button tap highlight on mobile */
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* ================================
+   Optional: App Container Feel
+================================ */
+main {
+  min-height: 100%;
+}
+
+/* Smooth transitions globally (subtle UX upgrade) */
+* {
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
 }
