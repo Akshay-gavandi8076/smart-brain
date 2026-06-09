@@ -259,10 +259,8 @@ function Sidebar({
             <TabsTrigger value="note">Note</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="chat" className="h-full">
-            <div className="flex h-full flex-col overflow-auto p-2">
-              <ChatPanel documentId={document._id} />
-            </div>
+          <TabsContent value="chat" className="mt-0">
+            <ChatPanel documentId={document._id} height={windowHeight} />
           </TabsContent>
 
           <TabsContent value="note" className="flex h-full flex-col p-2">

@@ -17,6 +17,7 @@ import {
 import { LoadingButton } from "@/components/loading-button";
 import { Send } from "lucide-react";
 import { btnIconStyles } from "@/styles/styles";
+import { useToast } from "@/components/ui/use-toast";
 
 const questionFormSchema = z.object({
   text: z
@@ -27,10 +28,15 @@ const questionFormSchema = z.object({
 
 interface QuestionFormProps {
   documentId: Id<"documents">;
+  onPendingChange?: (question: string | null) => void;
 }
 
-export function QuestionForm({ documentId }: QuestionFormProps) {
+export function QuestionForm({
+  documentId,
+  onPendingChange,
+}: QuestionFormProps) {
   const askQuestion = useAction(api.documents.askQuestion);
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof questionFormSchema>>({
     resolver: zodResolver(questionFormSchema),
@@ -40,11 +46,21 @@ export function QuestionForm({ documentId }: QuestionFormProps) {
   });
 
   const onSubmit = async (values: z.infer<typeof questionFormSchema>) => {
+    onPendingChange?.(values.text);
     try {
       await askQuestion({ question: values.text, documentId });
       form.reset();
     } catch (error) {
-      console.error("Error asking question:", error);
+      toast({
+        title: "Could not get an answer",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      onPendingChange?.(null);
     }
   };
 
@@ -62,6 +78,7 @@ export function QuestionForm({ documentId }: QuestionFormProps) {
               <FormControl>
                 <Input
                   placeholder="Ask any questions using AI about this document:"
+                  disabled={form.formState.isSubmitting}
                   {...field}
                 />
               </FormControl>

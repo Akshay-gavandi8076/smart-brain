@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dialog";
 
 import CreateJobForm from "./create-job-form";
+import { formatJobDate } from "@/lib/formatDate";
 
 export default function CreateJobButton() {
   const [open, setOpen] = useState(false);
@@ -25,7 +26,7 @@ export default function CreateJobButton() {
     setOpen(false);
     toast({
       title: "Job created",
-      description: "Your job has been created successfully.",
+      description: `Added on ${formatJobDate(Date.now())}`,
     });
   };
 

@@ -7,11 +7,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Doc } from "@/convex/_generated/dataModel";
-import { Eye, Loader2 } from "lucide-react";
+import { Eye } from "lucide-react";
 import Link from "next/link";
 import { DeleteDocumentButton } from "./[documentId]/delete-document-button";
 import { TagsList } from "@/components/tags-list";
 import { splitTags } from "@/lib/utils";
+import { DocumentDescription } from "./document-description";
 
 interface DocumentCardProps {
   document: Doc<"documents">;
@@ -26,21 +27,8 @@ export function DocumentCard({ document }: DocumentCardProps) {
         <CardTitle className="text-2xl">{title}</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col gap-4">
-          {description ? (
-            <div>
-              {description.length > 90
-                ? `${description.substring(0, 90)}...`
-                : description}
-            </div>
-          ) : (
-            <div className="flex justify-center">
-              <Loader2
-                className="animate-spin"
-                aria-label="Loading document description"
-              />
-            </div>
-          )}
+        <div className="flex min-h-[3rem] flex-col gap-4">
+          <DocumentDescription description={description} title={title} />
           {tags && <TagsList tags={splitTags(tags)} />}
         </div>
       </CardContent>

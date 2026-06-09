@@ -60,7 +60,8 @@ export const createJob = mutation({
       notes: args.notes,
       tokenIdentifier: userId,
       createdAt: now,
-      movedAt: now, // initial ordering uses movedAt too
+      updatedAt: now,
+      movedAt: now,
     });
   },
 });
@@ -105,6 +106,8 @@ export const updateJob = mutation({
     if (!job) throw new ConvexError("Job not found");
     if (job.tokenIdentifier !== userId) throw new ConvexError("Unauthorized");
 
+    const now = Date.now();
+
     await ctx.db.patch(args.jobId, {
       company: args.company,
       title: args.title,
@@ -112,7 +115,7 @@ export const updateJob = mutation({
       link: args.link,
       location: args.location,
       notes: args.notes,
-      // don't touch movedAt here; only moveJob / status move should set it
+      updatedAt: now,
     });
   },
 });
@@ -136,9 +139,12 @@ export const updateJobStatus = mutation({
     if (!job) throw new ConvexError("Job not found");
     if (job.tokenIdentifier !== userId) throw new ConvexError("Unauthorized");
 
+    const now = Date.now();
+
     await ctx.db.patch(args.jobId, {
       status: args.status,
-      movedAt: Date.now(), // treat status change as “latest move”
+      movedAt: now,
+      updatedAt: now,
     });
   },
 });
@@ -170,6 +176,7 @@ export const moveJob = mutation({
     await ctx.db.patch(args.jobId, {
       status: args.status,
       movedAt: args.movedAt,
+      updatedAt: args.movedAt,
     });
   },
 });

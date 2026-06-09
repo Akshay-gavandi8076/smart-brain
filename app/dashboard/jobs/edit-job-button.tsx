@@ -5,6 +5,8 @@ import { Pencil } from "lucide-react";
 import { Doc } from "@/convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import { btnIconStyles, btnStyles } from "@/styles/styles";
+import { cn } from "@/lib/utils";
 
 import {
   Dialog,
@@ -16,7 +18,17 @@ import {
 } from "@/components/ui/dialog";
 import EditJobForm from "./edit-job-form";
 
-export default function EditJobButton({ job }: { job: Doc<"jobs"> }) {
+interface EditJobButtonProps {
+  job: Doc<"jobs">;
+  showLabel?: boolean;
+  className?: string;
+}
+
+export default function EditJobButton({
+  job,
+  showLabel = false,
+  className,
+}: EditJobButtonProps) {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
 
@@ -31,8 +43,15 @@ export default function EditJobButton({ job }: { job: Doc<"jobs"> }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="icon" aria-label="Edit job">
-          <Pencil className="h-4 w-4" />
+        <Button
+          variant="outline"
+          size={showLabel ? "default" : "icon"}
+          className={cn(showLabel ? btnStyles : undefined, className)}
+          aria-label="Edit job"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Pencil className={btnIconStyles} />
+          {showLabel && <span>Edit</span>}
         </Button>
       </DialogTrigger>
 

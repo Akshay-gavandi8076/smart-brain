@@ -205,13 +205,20 @@ export const updateNote = mutation({
       }
     }
 
-    // Update note
     await ctx.db.patch(args.noteId, {
       title: args.title,
       text: args.text,
       tags: args.tags ?? "",
       updatedAt: Date.now(),
     });
+
+    if (args.text !== note.text) {
+      await ctx.scheduler.runAfter(0, internal.notes.createNoteEmbedding, {
+        noteId: args.noteId,
+        title: args.title,
+        text: args.text,
+      });
+    }
   },
 });
 
@@ -242,9 +249,16 @@ export const getNotesByDocumentId = query({
     documentId: v.id("documents"),
   },
   async handler(ctx, args) {
+    const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
+    if (!userId) return [];
+
+    const document = await ctx.db.get(args.documentId);
+    if (!document || document.tokenIdentifier !== userId) return [];
+
     return await ctx.db
       .query("notes")
-      .filter((q) => q.eq(q.field("documentId"), args.documentId))
+      .withIndex("by_documentId", (q) => q.eq("documentId", args.documentId))
+      .filter((q) => q.eq(q.field("tokenIdentifier"), userId))
       .collect();
   },
 });

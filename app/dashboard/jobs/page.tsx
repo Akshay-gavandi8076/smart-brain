@@ -1,24 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useMutation, useQuery } from "convex/react";
+import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Doc, Id } from "@/convex/_generated/dataModel";
+import { Doc } from "@/convex/_generated/dataModel";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import CreateJobButton from "./create-job-button";
 import JobList from "./job-list";
-import JobCard from "./job-card";
-
-import {
-  DndContext,
-  DragEndEvent,
-  DragOverlay,
-  DragStartEvent,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,14 +22,6 @@ export type JobStatus =
   | "offer"
   | "rejected"
   | "archived";
-
-const STATUSES: JobStatus[] = [
-  "applied",
-  "interview",
-  "offer",
-  "rejected",
-  "archived",
-];
 
 function norm(s: string) {
   return s.trim().toLowerCase();
@@ -59,10 +40,8 @@ function uniqSorted(values: string[]) {
 
 export default function JobsPage() {
   const jobs = useQuery(api.jobs.getJobs);
-  const updateStatus = useMutation(api.jobs.updateJobStatus);
 
   const [localJobs, setLocalJobs] = useState<Doc<"jobs">[] | null>(null);
-  const [activeJobId, setActiveJobId] = useState<Id<"jobs"> | null>(null);
 
   // --------- Filters / Search ----------
   const [search, setSearch] = useState("");
@@ -77,12 +56,6 @@ export default function JobsPage() {
     if (!jobs) return;
     setLocalJobs(jobs);
   }, [jobs]);
-
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: { distance: 6 },
-    }),
-  );
 
   // Build suggestion sources from existing jobs (client-side, fast, no extra schema/index)
   const allCompanies = useMemo(() => {
@@ -202,52 +175,6 @@ export default function JobsPage() {
     for (const job of filteredJobs) empty[job.status].push(job);
     return empty;
   }, [filteredJobs]);
-
-  const activeJob = useMemo(() => {
-    if (!activeJobId) return null;
-    return (localJobs ?? []).find((j) => j._id === activeJobId) ?? null;
-  }, [activeJobId, localJobs]);
-
-  // DnD handlers (keep your existing behavior)
-  const onDragStart = (event: DragStartEvent) => {
-    setActiveJobId(event.active.id as Id<"jobs">);
-  };
-
-  const onDragEnd = async (event: DragEndEvent) => {
-    setActiveJobId(null);
-
-    const overId = event.over?.id;
-    if (!overId || typeof overId !== "string") return;
-
-    const toStatus = overId as JobStatus;
-    if (!STATUSES.includes(toStatus)) return;
-
-    const jobId = event.active.id as Id<"jobs">;
-    const fromStatus = event.active.data.current?.status as
-      | JobStatus
-      | undefined;
-
-    if (fromStatus === toStatus) return;
-
-    // Optimistic: move instantly, newest first (put on top of array)
-    setLocalJobs((prev) => {
-      if (!prev) return prev;
-      const idx = prev.findIndex((j) => j._id === jobId);
-      if (idx === -1) return prev;
-
-      const updated: Doc<"jobs"> = { ...prev[idx], status: toStatus };
-      const next = prev.filter((j) => j._id !== jobId);
-
-      return [updated, ...next];
-    });
-
-    try {
-      await updateStatus({ jobId, status: toStatus });
-    } catch (e) {
-      setLocalJobs(jobs ?? null);
-      console.error(e);
-    }
-  };
 
   // Loading state
   if (!jobs || !localJobs) {
@@ -453,21 +380,7 @@ export default function JobsPage() {
           </div>
         )}
 
-        <DndContext
-          sensors={sensors}
-          onDragStart={onDragStart}
-          onDragEnd={onDragEnd}
-        >
-          <JobList grouped={grouped} stickyOffsetPx={10} />
-
-          <DragOverlay dropAnimation={{ duration: 140, easing: "ease-out" }}>
-            {activeJob ? (
-              <div className="w-full max-w-[360px]">
-                <JobCard job={activeJob} />
-              </div>
-            ) : null}
-          </DragOverlay>
-        </DndContext>
+        <JobList grouped={grouped} stickyOffsetPx={10} />
       </div>
     </main>
   );

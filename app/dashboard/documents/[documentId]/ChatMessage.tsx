@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Bot, Check, Copy } from "lucide-react";
+import { Bot, Check, Copy, User } from "lucide-react";
 import Image from "next/image";
 
 interface ChatMessageProps {
@@ -26,13 +26,19 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
     })}
   >
     {chat.isHuman ? (
-      <Image
-        src={user.imageUrl!}
-        alt="User Profile"
-        className="h-8 w-8 rounded-full"
-        width={32}
-        height={32}
-      />
+      user.imageUrl ? (
+        <Image
+          src={user.imageUrl}
+          alt="User Profile"
+          className="h-8 w-8 rounded-full"
+          width={32}
+          height={32}
+        />
+      ) : (
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-zinc-200 dark:bg-zinc-900">
+          <User className="h-4 w-4 text-muted-foreground" />
+        </div>
+      )
     ) : (
       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-200 dark:bg-zinc-900">
         <Bot className="h-7 w-7 text-blue-500" />

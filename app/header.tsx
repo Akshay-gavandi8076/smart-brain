@@ -78,8 +78,8 @@ export default function Header() {
             </div>
             <SignedOut>
               <SignInButton
-                forceRedirectUrl="/dashboard"
-                signUpForceRedirectUrl="/dashboard"
+                forceRedirectUrl="/dashboard/jobs"
+                signUpForceRedirectUrl="/dashboard/jobs"
                 mode="modal"
               >
                 <Button
