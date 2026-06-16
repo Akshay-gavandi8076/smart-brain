@@ -27,7 +27,7 @@
     "@types/pdfmake": "^0.2.9",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
-    "convex": "^1.12.1",
+    "convex": "^1.41.0",
     "framer-motion": "^11.3.17",
     "lucide-react": "^0.381.0",
     "mini-svg-data-uri": "^1.4.4",

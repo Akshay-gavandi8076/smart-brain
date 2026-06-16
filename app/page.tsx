@@ -93,6 +93,7 @@ export default function LandingPage() {
             height={150}
             className="rounded"
             alt="an image of a brain"
+            priority
           />
 
           {/* Client-only animated component */}

@@ -26,6 +26,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
   );
 }
 
+// TODO:
+// ConvexProviderWithClerk expects a different Clerk UseAuth type.
+// Investigate Clerk/Convex version alignment and remove this cast.
 function OtherProviders({ children }: { children: React.ReactNode }) {
   const { resolvedTheme } = useTheme();
 
@@ -36,7 +39,7 @@ function OtherProviders({ children }: { children: React.ReactNode }) {
       }}
       publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
     >
-      <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
+      <ConvexProviderWithClerk client={convex} useAuth={useAuth as any}>
         {children}
       </ConvexProviderWithClerk>
     </ClerkProvider>
