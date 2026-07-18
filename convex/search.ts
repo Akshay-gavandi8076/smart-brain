@@ -1,15 +1,16 @@
-import { v } from 'convex/values'
-import { action, query } from './_generated/server'
-import { embed } from './notes'
-import { api } from './_generated/api'
-import { Doc } from './_generated/dataModel'
+import { v } from "convex/values";
+import { action } from "./_generated/server";
+import { embed } from "./lib/openai";
+import { api } from "./_generated/api";
+import { Doc } from "./_generated/dataModel";
+import { getUserId } from "./lib/auth";
 
 export const searchAction = action({
   args: {
     search: v.string(),
   },
   handler: async (ctx, args) => {
-    const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier
+    const userId = await getUserId(ctx);
     if (!userId) {
       return null
     }

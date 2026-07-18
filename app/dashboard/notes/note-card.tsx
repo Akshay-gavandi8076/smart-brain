@@ -1,4 +1,3 @@
-// app/dashboard/notes/note-card.tsx
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,11 +7,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Doc } from "@/convex/_generated/dataModel";
-import { Eye, Loader2, FileText } from "lucide-react";
+import { Eye, FileText } from "lucide-react";
 import Link from "next/link";
 import { DeleteNoteButton } from "./[noteId]/delete-note-button";
 import { TagsList } from "@/components/tags-list";
-import { splitTags } from "@/lib/utils";
+import { parseTags } from "@/lib/tags";
 import {
   Tooltip,
   TooltipContent,
@@ -46,19 +45,11 @@ export function NoteCard({ note }: NoteCardProps) {
 
       <CardContent>
         <div className="flex flex-col gap-4">
-          {!note ? (
-            <div className="flex justify-center">
-              <Loader2 className="animate-spin" aria-label="Loading note" />
-            </div>
-          ) : (
-            <div>
-              {note.text.length > 90
-                ? `${note.text.substring(0, 90)}...`
-                : note.text}
-            </div>
-          )}
+          <p className="line-clamp-3">
+            {note.text.length > 90 ? `${note.text.slice(0, 90)}...` : note.text}
+          </p>
 
-          {note.tags && <TagsList tags={splitTags(note.tags || "")} />}
+          <TagsList tags={parseTags(note.tags)} />
         </div>
       </CardContent>
 

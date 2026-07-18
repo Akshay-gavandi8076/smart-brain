@@ -19,7 +19,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { badgeVariants } from "@/components/ui/badge";
-import { cn, splitTags } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import { formatTags, parseTags } from "@/lib/tags";
 import { generatePDF } from "@/lib/generatePDF";
 import { DeleteNoteButton } from "./delete-note-button";
 import { btnIconStyles } from "@/styles/styles";
@@ -44,7 +45,6 @@ export default function NotesPage() {
   );
 
   const updateNote = useMutation(api.notes.updateNote);
-  const addOrIncrementTag = useMutation(api.tags.addOrIncrementTag);
 
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState("");
@@ -59,16 +59,12 @@ export default function NotesPage() {
     activeTagIndex !== null ? tags[activeTagIndex] : newTag;
 
   const suggestions = useTagSuggestions(activeInputValue);
-  const existingTags = useQuery(api.tags.getTags) || [];
 
-  /* -----------------------------
-     Sync note → local state
-  ------------------------------ */
   useEffect(() => {
     if (!note) return;
     setTitle(note.title);
     setText(note.text);
-    setTags(splitTags(note.tags || "").filter(Boolean));
+    setTags(parseTags(note.tags));
   }, [note]);
 
   if (!note) return null;
@@ -83,20 +79,11 @@ export default function NotesPage() {
       .map((t) => t.replace(/^"+|"+$/g, "").trim())
       .filter(Boolean);
 
-    // Fetch existing tags for current user
-    const existingTagNames = existingTags.map((t) => t.name);
-
-    // Only add truly new tags
-    const newTags = normalizedTags.filter((t) => !existingTagNames.includes(t));
-    if (newTags.length > 0) {
-      await Promise.all(newTags.map((tag) => addOrIncrementTag({ name: tag }))); // call directly
-    }
-
     await updateNote({
       noteId: note._id,
       title,
       text,
-      tags: normalizedTags.join(","),
+      tags: formatTags(normalizedTags),
     });
 
     setIsEditing(false);
@@ -105,7 +92,7 @@ export default function NotesPage() {
   const handleCancel = () => {
     setTitle(note.title);
     setText(note.text);
-    setTags(splitTags(note.tags || ""));
+    setTags(parseTags(note.tags));
     setNewTag("");
     setActiveTagIndex(null);
     setIsEditing(false);

@@ -17,7 +17,7 @@ import {
 import { btnIconStyles } from "@/styles/styles";
 import { useRouter } from "next/navigation";
 import { TagsList } from "@/components/tags-list";
-import { splitTags } from "@/lib/utils";
+import { parseTags } from "@/lib/tags";
 import { api } from "@/convex/_generated/api";
 import NoteForm from "./document-note-form";
 import { useToast } from "@/components/ui/use-toast";
@@ -167,7 +167,7 @@ function Header({
         </Button>
         <h1 className="text-4xl font-bold">{document.title}</h1>
       </div>
-      {document.tags && <TagsList tags={splitTags(document.tags || "")} />}
+      <TagsList tags={parseTags(document.tags)} />
       <DeleteDocumentButton documentId={document._id} />
     </div>
   );

@@ -11,7 +11,7 @@ import { Eye } from "lucide-react";
 import Link from "next/link";
 import { DeleteDocumentButton } from "./[documentId]/delete-document-button";
 import { TagsList } from "@/components/tags-list";
-import { splitTags } from "@/lib/utils";
+import { parseTags } from "@/lib/tags";
 import { DocumentDescription } from "./document-description";
 
 interface DocumentCardProps {
@@ -29,7 +29,7 @@ export function DocumentCard({ document }: DocumentCardProps) {
       <CardContent>
         <div className="flex min-h-[3rem] flex-col gap-4">
           <DocumentDescription description={description} title={title} />
-          {tags && <TagsList tags={splitTags(tags)} />}
+          <TagsList tags={parseTags(tags)} />
         </div>
       </CardContent>
 

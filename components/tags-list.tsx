@@ -1,17 +1,21 @@
 "use client";
-import React from "react";
+
 import { badgeVariants } from "./ui/badge";
-import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-export function TagsList({ tags }: { tags: string[] }) {
-  const router = useRouter();
+interface TagsListProps {
+  tags: string[];
+}
+
+export function TagsList({ tags }: TagsListProps) {
+  if (tags.length === 0) return null;
+
   return (
     <div className="flex flex-wrap gap-2">
-      {tags?.map((tag) => (
-        <button key={tag} className={cn(badgeVariants())}>
+      {tags.map((tag) => (
+        <span key={tag} className={cn(badgeVariants())}>
           {tag}
-        </button>
+        </span>
       ))}
     </div>
   );

@@ -1,6 +1,5 @@
 "use client";
 
-import { z } from "zod";
 import { Doc } from "@/convex/_generated/dataModel";
 import { api } from "@/convex/_generated/api";
 import { useMutation } from "convex/react";
@@ -28,31 +27,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-
-const jobSchema = z.object({
-  company: z.string().min(2).max(200),
-  title: z.string().min(2).max(200),
-  status: z.union([
-    z.literal("applied"),
-    z.literal("interview"),
-    z.literal("offer"),
-    z.literal("rejected"),
-    z.literal("archived"),
-  ]),
-  link: z.string().url("Must be a valid URL").optional().or(z.literal("")),
-  location: z.string().max(200).optional().or(z.literal("")),
-  notes: z.string().max(5000).optional().or(z.literal("")),
-});
-
-type JobFormValues = z.infer<typeof jobSchema>;
-
-const STATUS_OPTIONS: { value: JobFormValues["status"]; label: string }[] = [
-  { value: "applied", label: "Applied" },
-  { value: "interview", label: "Interview" },
-  { value: "offer", label: "Offer" },
-  { value: "rejected", label: "Rejected" },
-  { value: "archived", label: "Archived" },
-];
+import {
+  jobFormSchema,
+  JobFormValues,
+  normalizeOptionalField,
+  STATUS_OPTIONS,
+} from "@/lib/jobs";
 
 export default function EditJobForm({
   job,
@@ -65,7 +45,7 @@ export default function EditJobForm({
   const { toast } = useToast();
 
   const form = useForm<JobFormValues>({
-    resolver: zodResolver(jobSchema),
+    resolver: zodResolver(jobFormSchema),
     defaultValues: {
       company: job.company,
       title: job.title,
@@ -87,9 +67,9 @@ export default function EditJobForm({
         company: values.company.trim(),
         title: values.title.trim(),
         status: values.status,
-        link: values.link?.trim() ? values.link.trim() : undefined,
-        location: values.location?.trim() ? values.location.trim() : undefined,
-        notes: values.notes?.trim() ? values.notes.trim() : undefined,
+        link: normalizeOptionalField(values.link),
+        location: normalizeOptionalField(values.location),
+        notes: normalizeOptionalField(values.notes),
       });
 
       onSaved();

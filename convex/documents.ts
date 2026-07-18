@@ -13,31 +13,18 @@ import { ConvexError, v } from "convex/values";
 import { internal } from "./_generated/api";
 import OpenAI from "openai";
 import { Id } from "./_generated/dataModel";
-import { embed } from "./notes";
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+import { getUserId, requireUserId } from "./lib/auth";
+import { embed, openai } from "./lib/openai";
 
 export async function hasAccessToDocument(
   ctx: MutationCtx | QueryCtx,
   documentId: Id<"documents">,
 ) {
-  const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
-
-  if (!userId) {
-    return null;
-  }
+  const userId = await getUserId(ctx);
+  if (!userId) return null;
 
   const document = await ctx.db.get(documentId);
-
-  if (!document) {
-    return null;
-  }
-
-  if (document?.tokenIdentifier !== userId) {
-    return null;
-  }
+  if (!document || document.tokenIdentifier !== userId) return null;
 
   return { document, userId };
 }
@@ -67,11 +54,8 @@ export const generateUploadUrl = mutation(async (ctx) => {
 
 export const getDocuments = query({
   async handler(ctx) {
-    const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
-
-    if (!userId) {
-      return undefined;
-    }
+    const userId = await getUserId(ctx);
+    if (!userId) return undefined;
 
     const documents = await ctx.db
       .query("documents")
@@ -109,11 +93,7 @@ export const createDocument = mutation({
     fileId: v.id("_storage"),
   },
   async handler(ctx, args) {
-    const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
-
-    if (!userId) {
-      throw new ConvexError("Not Authenticated");
-    }
+    const userId = await requireUserId(ctx);
     const documentId = await ctx.db.insert("documents", {
       title: args.title,
       tokenIdentifier: userId,

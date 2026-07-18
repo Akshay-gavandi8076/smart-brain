@@ -5,54 +5,30 @@ import {
   mutation,
   query,
 } from "./_generated/server";
-import OpenAI from "openai";
 import { internal } from "./_generated/api";
+import { getUserId, requireUserId } from "./lib/auth";
+import { embed } from "./lib/openai";
+import { parseTagString, syncAddedTags, syncTags } from "./lib/tags";
 
-/* ---------------------------------------------
-   OpenAI setup (unchanged)
---------------------------------------------- */
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
-/* ---------------------------------------------
-   Helper: normalize comma-separated tags
-   "React, ai , convex" → ["react", "ai", "convex"]
---------------------------------------------- */
-function normalizeTags(tags?: string): string[] {
-  if (!tags) return [];
-  return tags
-    .split(",")
-    .map((t) => t.trim().toLowerCase())
-    .filter(Boolean);
-}
-
-/* ---------------------------------------------
-   GET SINGLE NOTE
---------------------------------------------- */
 export const getNote = query({
   args: {
     noteId: v.id("notes"),
   },
   async handler(ctx, args) {
-    const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
+    const userId = await getUserId(ctx);
     if (!userId) return null;
 
     const note = await ctx.db.get(args.noteId);
     if (!note || note.tokenIdentifier !== userId) return null;
 
     const document = note.documentId ? await ctx.db.get(note.documentId) : null;
-
     return { ...note, document };
   },
 });
 
-/* ---------------------------------------------
-   GET ALL NOTES (sorted by updatedAt)
---------------------------------------------- */
 export const getNotes = query({
   async handler(ctx) {
-    const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
+    const userId = await getUserId(ctx);
     if (!userId) return null;
 
     const notes = await ctx.db
@@ -69,17 +45,6 @@ export const getNotes = query({
     return notes;
   },
 });
-
-/* ---------------------------------------------
-   EMBEDDING HELPERS (unchanged)
---------------------------------------------- */
-export async function embed(text: string) {
-  const embedding = await openai.embeddings.create({
-    model: "text-embedding-ada-002",
-    input: text,
-  });
-  return embedding.data[0].embedding;
-}
 
 export const setNoteEmbedding = internalMutation({
   args: {
@@ -106,11 +71,6 @@ export const createNoteEmbedding = internalAction({
   },
 });
 
-/* ---------------------------------------------
-   CREATE NOTE
-   - Inserts note
-   - Creates tag suggestions ONCE
---------------------------------------------- */
 export const createNote = mutation({
   args: {
     title: v.string(),
@@ -119,12 +79,9 @@ export const createNote = mutation({
     documentId: v.optional(v.id("documents")),
   },
   async handler(ctx, args) {
-    const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
-    if (!userId) throw new ConvexError("User not found");
+    const userId = await requireUserId(ctx);
+    const tags = parseTagString(args.tags);
 
-    const normalizedTags = normalizeTags(args.tags);
-
-    // Insert note
     const noteId = await ctx.db.insert("notes", {
       title: args.title,
       text: args.text,
@@ -134,25 +91,8 @@ export const createNote = mutation({
       updatedAt: Date.now(),
     });
 
-    // Create tag suggestions (only if not already present)
-    for (const tag of normalizedTags) {
-      const existing = await ctx.db
-        .query("tags")
-        .withIndex("by_user_normalized", (q) =>
-          q.eq("tokenIdentifier", userId).eq("normalized", tag),
-        )
-        .first();
+    await syncTags(ctx, userId, tags);
 
-      if (!existing) {
-        await ctx.db.insert("tags", {
-          name: tag,
-          normalized: tag,
-          tokenIdentifier: userId,
-        });
-      }
-    }
-
-    // Create embedding async
     await ctx.scheduler.runAfter(0, internal.notes.createNoteEmbedding, {
       noteId,
       title: args.title,
@@ -161,11 +101,6 @@ export const createNote = mutation({
   },
 });
 
-/* ---------------------------------------------
-   UPDATE NOTE  ✅ FIXED BUG HERE
-   - Diff old tags vs new tags
-   - Insert ONLY newly added tags
---------------------------------------------- */
 export const updateNote = mutation({
   args: {
     noteId: v.id("notes"),
@@ -174,36 +109,14 @@ export const updateNote = mutation({
     tags: v.optional(v.string()),
   },
   async handler(ctx, args) {
-    const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
-    if (!userId) throw new ConvexError("User not found");
-
+    const userId = await requireUserId(ctx);
     const note = await ctx.db.get(args.noteId);
     if (!note) throw new ConvexError("Note not found");
     if (note.tokenIdentifier !== userId) throw new ConvexError("Unauthorized");
 
-    const oldTags = normalizeTags(note.tags);
-    const newTags = normalizeTags(args.tags);
-
-    // Only tags that were newly added
-    const addedTags = newTags.filter((tag) => !oldTags.includes(tag));
-
-    // Insert ONLY new tags
-    for (const tag of addedTags) {
-      const existing = await ctx.db
-        .query("tags")
-        .withIndex("by_user_normalized", (q) =>
-          q.eq("tokenIdentifier", userId).eq("normalized", tag),
-        )
-        .first();
-
-      if (!existing) {
-        await ctx.db.insert("tags", {
-          name: tag,
-          normalized: tag,
-          tokenIdentifier: userId,
-        });
-      }
-    }
+    const previousTags = parseTagString(note.tags);
+    const nextTags = parseTagString(args.tags);
+    await syncAddedTags(ctx, userId, previousTags, nextTags);
 
     await ctx.db.patch(args.noteId, {
       title: args.title,
@@ -222,17 +135,12 @@ export const updateNote = mutation({
   },
 });
 
-/* ---------------------------------------------
-   DELETE NOTE
---------------------------------------------- */
 export const deleteNote = mutation({
   args: {
     noteId: v.id("notes"),
   },
   async handler(ctx, args) {
-    const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
-    if (!userId) throw new ConvexError("User not found");
-
+    const userId = await requireUserId(ctx);
     const note = await ctx.db.get(args.noteId);
     if (!note) throw new ConvexError("Note not found");
     if (note.tokenIdentifier !== userId) throw new ConvexError("Unauthorized");
@@ -241,15 +149,12 @@ export const deleteNote = mutation({
   },
 });
 
-/* ---------------------------------------------
-   GET NOTES BY DOCUMENT ID
---------------------------------------------- */
 export const getNotesByDocumentId = query({
   args: {
     documentId: v.id("documents"),
   },
   async handler(ctx, args) {
-    const userId = (await ctx.auth.getUserIdentity())?.tokenIdentifier;
+    const userId = await getUserId(ctx);
     if (!userId) return [];
 
     const document = await ctx.db.get(args.documentId);

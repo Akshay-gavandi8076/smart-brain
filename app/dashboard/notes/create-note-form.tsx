@@ -12,11 +12,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { LoadingButton } from "@/components/loading-button";
-import { useMutation, useQuery } from "convex/react";
+import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
+import { formatTags, parseTags } from "@/lib/tags";
 
 const createNoteFormSchema = z.object({
   title: z
@@ -33,10 +34,7 @@ export default function CreateNoteForm({
   onNoteCreated: () => void;
 }) {
   const createNote = useMutation(api.notes.createNote);
-  const addOrIncrementTag = useMutation(api.tags.addOrIncrementTag);
   const { toast } = useToast();
-
-  const getTags = useQuery(api.tags.getTags);
 
   const form = useForm<z.infer<typeof createNoteFormSchema>>({
     resolver: zodResolver(createNoteFormSchema),
@@ -49,38 +47,20 @@ export default function CreateNoteForm({
 
   async function onSubmit(values: z.infer<typeof createNoteFormSchema>) {
     try {
-      const tagsArray = values.tags
-        ?.split(",")
-        .map((t) => t.trim())
-        .filter(Boolean);
-
-      // 1️⃣ Create the note
       await createNote({
         title: values.title,
         text: values.text,
-        tags: tagsArray?.join(",") || "",
+        tags: formatTags(parseTags(values.tags)),
       });
-
-      // 2️⃣ Fetch existing tags
-      const existingTags = getTags || [];
-      const existingTagNames = existingTags.map((t) => t.name);
-
-      // 3️⃣ Add only new tags to suggestions
-      const newTags = tagsArray?.filter((t) => !existingTagNames.includes(t));
-      if (newTags && newTags.length > 0) {
-        await Promise.all(
-          newTags.map((tag) => addOrIncrementTag({ name: tag })),
-        );
-      }
 
       onNoteCreated();
       form.reset();
     } catch (error) {
       console.error("Error creating a note:", error);
-
       toast({
         title: "Error creating note",
         description: "An error occurred while creating the note.",
+        variant: "destructive",
       });
     }
   }
