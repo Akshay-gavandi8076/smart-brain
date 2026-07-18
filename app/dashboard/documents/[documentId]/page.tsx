@@ -22,6 +22,7 @@ import { api } from "@/convex/_generated/api";
 import NoteForm from "./document-note-form";
 import { useToast } from "@/components/ui/use-toast";
 import { Skeleton } from "@/components/ui/skeleton"; // assuming you have a Skeleton component
+import { htmlToText } from "@/lib/html";
 
 type DocumentWithUrl = Doc<"documents"> & { documentUrl: string | null };
 
@@ -313,30 +314,40 @@ function NoteSection({
       )}
       <div className="mt-4">
         {notes.length > 0 ? (
-          notes.map((note) => (
-            <div
-              key={note._id}
-              className="mb-2 flex justify-between rounded-lg bg-zinc-100 p-4 shadow-md dark:bg-zinc-900"
-            >
-              <p>{note.text}</p>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => router.push(`/dashboard/notes/${note._id}`)}
-                >
-                  <Eye className={btnIconStyles} />
-                </Button>
-                <Button
-                  variant="destructive"
-                  size="icon"
-                  onClick={() => deleteNote({ noteId: note._id })}
-                >
-                  <Trash className={btnIconStyles} />
-                </Button>
+          notes.map((note) => {
+            const preview = htmlToText(note.text);
+
+            return (
+              <div
+                key={note._id}
+                className="mb-2 flex items-start justify-between rounded-lg bg-zinc-100 p-4 shadow-md dark:bg-zinc-900"
+              >
+                <p className="line-clamp-3 pr-1 text-sm text-muted-foreground">
+                  {preview.length > 160
+                    ? `${preview.slice(0, 160)}...`
+                    : preview}
+                </p>
+
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => router.push(`/dashboard/notes/${note._id}`)}
+                  >
+                    <Eye className={btnIconStyles} />
+                  </Button>
+
+                  <Button
+                    variant="destructive"
+                    size="icon"
+                    onClick={() => deleteNote({ noteId: note._id })}
+                  >
+                    <Trash className={btnIconStyles} />
+                  </Button>
+                </div>
               </div>
-            </div>
-          ))
+            );
+          })
         ) : (
           <p>No notes available</p>
         )}

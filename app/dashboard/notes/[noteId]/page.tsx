@@ -1,3 +1,4 @@
+// app/dashboard/notes/[noteId]/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -33,6 +34,9 @@ import {
 } from "@/components/ui/tooltip";
 
 import { useTagSuggestions } from "@/hooks/useTagSuggestions";
+import RichTextEditor from "@/components/editor/RichTextEditor";
+import { normalizeEditorContent } from "@/lib/editor";
+import { sanitizeHTML } from "@/lib/sanitize";
 
 export default function NotesPage() {
   const { noteId } = useParams() as { noteId: Id<"notes"> };
@@ -60,21 +64,40 @@ export default function NotesPage() {
 
   const suggestions = useTagSuggestions(activeInputValue);
 
+  // useEffect(() => {
+  //   if (!note) return;
+  //   setTitle(note.title);
+  //   setText(note.text);
+  //   setTags(parseTags(note.tags));
+  // }, [note]);
+
   useEffect(() => {
     if (!note) return;
+
+    console.log("LOADED FROM CONVEX:", note.text);
+
     setTitle(note.title);
-    setText(note.text);
+
+    setText(normalizeEditorContent(note.text));
+
     setTags(parseTags(note.tags));
   }, [note]);
 
   if (!note) return null;
 
+  // const hasChanges =
+  //   title !== note.title ||
+  //   text !== note.text ||
+  //   tags.join(",") !== (note.tags || "");
+
   const hasChanges =
     title !== note.title ||
-    text !== note.text ||
+    text !== normalizeEditorContent(note.text) ||
     tags.join(",") !== (note.tags || "");
 
   const handleSave = async () => {
+    console.log("SAVING CONTENT:", text);
+
     const normalizedTags = tags
       .map((t) => t.replace(/^"+|"+$/g, "").trim())
       .filter(Boolean);
@@ -312,13 +335,31 @@ export default function NotesPage() {
         {/* CONTENT */}
         <div className="flex-1 overflow-auto bg-zinc-100 p-4 dark:bg-zinc-900">
           {isEditing ? (
-            <Textarea
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              className="h-full resize-none bg-transparent"
+            <RichTextEditor
+              content={text}
+              onChange={setText}
+              editable={isEditing}
             />
           ) : (
-            <div className="whitespace-pre-line">{text}</div>
+            // <Textarea
+            //   value={text}
+            //   onChange={(e) => setText(e.target.value)}
+            //   className="h-full resize-none bg-transparent"
+            // />
+            // <div className="whitespace-pre-line">{text}</div>
+
+            // <div
+            //   className="prose dark:prose-invert max-w-none px-8 py-6"
+            //   dangerouslySetInnerHTML={{
+            //     __html: text,
+            //   }}
+            // />
+            <div
+              className="prose dark:prose-invert max-w-none px-8 py-6"
+              dangerouslySetInnerHTML={{
+                __html: sanitizeHTML(text),
+              }}
+            />
           )}
         </div>
       </div>

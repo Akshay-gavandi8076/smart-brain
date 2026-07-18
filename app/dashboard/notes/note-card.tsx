@@ -17,12 +17,15 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { htmlToText } from "@/lib/html";
 
 interface NoteCardProps {
   note: Doc<"notes">;
 }
 
 export function NoteCard({ note }: NoteCardProps) {
+  const preview = htmlToText(note.text);
+
   return (
     <Card className="shadow-[0_10px_10px_rgba(8,_112,_184,_0.7)]">
       <CardHeader>
@@ -45,10 +48,12 @@ export function NoteCard({ note }: NoteCardProps) {
 
       <CardContent>
         <div className="flex flex-col gap-4">
-          <p className="line-clamp-3">
+          {/* <p className="line-clamp-3">
             {note.text.length > 90 ? `${note.text.slice(0, 90)}...` : note.text}
+          </p> */}
+          <p className="line-clamp-3 text-muted-foreground">
+            {preview.length > 120 ? `${preview.slice(0, 120)}...` : preview}
           </p>
-
           <TagsList tags={parseTags(note.tags)} />
         </div>
       </CardContent>

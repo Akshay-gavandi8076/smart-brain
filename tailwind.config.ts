@@ -1,7 +1,7 @@
-import type { Config } from 'tailwindcss'
-const { fontFamily } = require('tailwindcss/defaultTheme')
+import type { Config } from "tailwindcss";
+const { fontFamily } = require("tailwindcss/defaultTheme");
 const svgToDataUri = require("mini-svg-data-uri");
- 
+
 const colors = require("tailwindcss/colors");
 const {
   default: flattenColorPalette,
@@ -86,6 +86,7 @@ const config = {
   },
   plugins: [
     require("tailwindcss-animate"),
+    require("@tailwindcss/typography"),
     function ({ matchUtilities, theme }: any) {
       matchUtilities(
         {
@@ -114,4 +115,4 @@ const config = {
   ],
 } satisfies Config;
 
-export default config
+export default config;
