@@ -6,7 +6,6 @@ import { TextAlign } from "@tiptap/extension-text-align";
 import { Highlight } from "@tiptap/extension-highlight";
 import { TaskList } from "@tiptap/extension-task-list";
 import { TaskItem } from "@tiptap/extension-task-item";
-import { Image } from "@tiptap/extension-image";
 import { Table } from "@tiptap/extension-table";
 import { TableRow } from "@tiptap/extension-table-row";
 import { TableCell } from "@tiptap/extension-table-cell";
@@ -78,12 +77,6 @@ export const editorExtensions = [
 
   TaskItem.configure({
     nested: true,
-  }),
-
-  Image.configure({
-    HTMLAttributes: {
-      class: "rounded-lg max-w-full",
-    },
   }),
 
   Table.configure({

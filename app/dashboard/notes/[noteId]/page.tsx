@@ -1,7 +1,7 @@
 // app/dashboard/notes/[noteId]/page.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { useParams, useRouter } from "next/navigation";
 import { Id } from "@/convex/_generated/dataModel";
@@ -18,11 +18,9 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { badgeVariants } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { formatTags, parseTags } from "@/lib/tags";
-import { generatePDF } from "@/lib/generatePDF";
 import { DeleteNoteButton } from "./delete-note-button";
 import { btnIconStyles } from "@/styles/styles";
 
@@ -34,13 +32,27 @@ import {
 } from "@/components/ui/tooltip";
 
 import { useTagSuggestions } from "@/hooks/useTagSuggestions";
-import RichTextEditor from "@/components/editor/RichTextEditor";
+// import RichTextEditor from "@/components/editor/RichTextEditor";
 import { normalizeEditorContent } from "@/lib/editor";
 import { sanitizeHTML } from "@/lib/sanitize";
+
+import dynamic from "next/dynamic";
+
+const RichTextEditor = dynamic(
+  () => import("@/components/editor/RichTextEditor"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="rounded-xl border p-6">Loading editor...</div>
+    ),
+  },
+);
 
 export default function NotesPage() {
   const { noteId } = useParams() as { noteId: Id<"notes"> };
   const router = useRouter();
+
+  console.log("NoteId:", noteId);
 
   const note = useQuery(api.notes.getNote, { noteId });
   const document = useQuery(
@@ -64,17 +76,8 @@ export default function NotesPage() {
 
   const suggestions = useTagSuggestions(activeInputValue);
 
-  // useEffect(() => {
-  //   if (!note) return;
-  //   setTitle(note.title);
-  //   setText(note.text);
-  //   setTags(parseTags(note.tags));
-  // }, [note]);
-
   useEffect(() => {
     if (!note) return;
-
-    console.log("LOADED FROM CONVEX:", note.text);
 
     setTitle(note.title);
 
@@ -83,21 +86,19 @@ export default function NotesPage() {
     setTags(parseTags(note.tags));
   }, [note]);
 
+  const hasChanges = useMemo(() => {
+    if (!note) return false;
+
+    return (
+      title !== note.title ||
+      text !== normalizeEditorContent(note.text) ||
+      tags.join(",") !== (note.tags || "")
+    );
+  }, [note, title, text, tags]);
+
   if (!note) return null;
 
-  // const hasChanges =
-  //   title !== note.title ||
-  //   text !== note.text ||
-  //   tags.join(",") !== (note.tags || "");
-
-  const hasChanges =
-    title !== note.title ||
-    text !== normalizeEditorContent(note.text) ||
-    tags.join(",") !== (note.tags || "");
-
   const handleSave = async () => {
-    console.log("SAVING CONTENT:", text);
-
     const normalizedTags = tags
       .map((t) => t.replace(/^"+|"+$/g, "").trim())
       .filter(Boolean);
@@ -138,6 +139,11 @@ export default function NotesPage() {
     setTags(tags.filter((t) => t !== tag));
   };
 
+  const handleDownloadPDF = async () => {
+    const { generatePDF } = await import("@/lib/generatePDF");
+
+    await generatePDF(title, tags, text);
+  };
   /* -----------------------------
      Render
   ------------------------------ */
@@ -230,13 +236,14 @@ export default function NotesPage() {
                     Edit
                   </Button>
                   <Button
-                    onClick={() => generatePDF(title, tags, text)}
+                    onClick={handleDownloadPDF}
                     variant="outline"
                     className="flex gap-2"
                   >
                     <Download className={btnIconStyles} />
                     PDF
                   </Button>
+
                   <DeleteNoteButton noteId={note._id} />
                 </>
               )}
@@ -341,21 +348,8 @@ export default function NotesPage() {
               editable={isEditing}
             />
           ) : (
-            // <Textarea
-            //   value={text}
-            //   onChange={(e) => setText(e.target.value)}
-            //   className="h-full resize-none bg-transparent"
-            // />
-            // <div className="whitespace-pre-line">{text}</div>
-
-            // <div
-            //   className="prose dark:prose-invert max-w-none px-8 py-6"
-            //   dangerouslySetInnerHTML={{
-            //     __html: text,
-            //   }}
-            // />
             <div
-              className="prose dark:prose-invert max-w-none px-8 py-6"
+              className="prose max-w-none px-8 py-6 dark:prose-invert"
               dangerouslySetInnerHTML={{
                 __html: sanitizeHTML(text),
               }}

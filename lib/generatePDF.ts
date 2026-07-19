@@ -1,13 +1,14 @@
 // lib/generatePDF.ts
 
-import html2pdf from "html2pdf.js";
+import { getHtml2Pdf } from "./pdf/html2pdf";
 
 export const generatePDF = async (
   title: string,
   tags: string[],
   content: string,
 ) => {
-  // Create temporary container
+  const html2pdf = await getHtml2Pdf();
+
   const element = document.createElement("div");
 
   element.style.background = "white";

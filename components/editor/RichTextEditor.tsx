@@ -21,7 +21,7 @@ interface RichTextEditorProps {
   className?: string;
 }
 
-export default function RichTextEditor({
+function RichTextEditor({
   content,
   onChange,
   editable = true,
@@ -98,11 +98,11 @@ export default function RichTextEditor({
         <EditorContent
           editor={editor}
           className={cn(
-            "prose dark:prose-invert min-h-[500px] max-w-none",
+            "prose min-h-[500px] max-w-none dark:prose-invert",
             "prose-headings:font-bold",
-            "prose-h1:text-4xl prose-h1:mt-8 prose-h1:mb-4",
-            "prose-h2:text-3xl prose-h2:mt-6 prose-h2:mb-3",
-            "prose-h3:text-2xl prose-h3:mt-5 prose-h3:mb-2",
+            "prose-h1:mb-4 prose-h1:mt-8 prose-h1:text-4xl",
+            "prose-h2:mb-3 prose-h2:mt-6 prose-h2:text-3xl",
+            "prose-h3:mb-2 prose-h3:mt-5 prose-h3:text-2xl",
             "prose-p:leading-8",
             "px-8 py-6 outline-none",
           )}
@@ -111,3 +111,5 @@ export default function RichTextEditor({
     </div>
   );
 }
+
+export default RichTextEditor;
