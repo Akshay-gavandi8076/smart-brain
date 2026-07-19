@@ -65,11 +65,6 @@ function RichTextEditor({
     - opening another note
     - loading from Convex
   */
-
-  console.log(
-    editor?.extensionManager.extensions.map((extension) => extension.name),
-  );
-
   useEffect(() => {
     if (!editor) return;
 

@@ -10,12 +10,14 @@ import { Table } from "@tiptap/extension-table";
 import { TableRow } from "@tiptap/extension-table-row";
 import { TableCell } from "@tiptap/extension-table-cell";
 import { TableHeader } from "@tiptap/extension-table-header";
-import { Dropcursor } from "@tiptap/extension-dropcursor";
-import { Gapcursor } from "@tiptap/extension-gapcursor";
 import { Typography } from "@tiptap/extension-typography";
 
 export const editorExtensions = [
   StarterKit.configure({
+    link: false,
+
+    underline: false,
+
     heading: {
       levels: [1, 2, 3],
     },
@@ -91,10 +93,6 @@ export const editorExtensions = [
   TableHeader,
 
   TableCell,
-
-  Dropcursor,
-
-  Gapcursor,
 
   Typography,
 ];
