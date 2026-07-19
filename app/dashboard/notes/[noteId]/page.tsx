@@ -52,8 +52,6 @@ export default function NotesPage() {
   const { noteId } = useParams() as { noteId: Id<"notes"> };
   const router = useRouter();
 
-  console.log("NoteId:", noteId);
-
   const note = useQuery(api.notes.getNote, { noteId });
   const document = useQuery(
     api.documents.getDocument,
