@@ -82,7 +82,7 @@ function RichTextEditor({
   return (
     <div
       className={cn(
-        "flex h-full w-full flex-col rounded-xl border bg-background",
+        "flex h-full w-full flex-col border bg-background",
         className,
       )}
     >
@@ -99,7 +99,7 @@ function RichTextEditor({
             "prose-h2:mb-3 prose-h2:mt-6 prose-h2:text-3xl",
             "prose-h3:mb-2 prose-h3:mt-5 prose-h3:text-2xl",
             "prose-p:leading-8",
-            "px-8 py-6 outline-none",
+            "px-2 py-2 outline-none",
           )}
         />
       </div>

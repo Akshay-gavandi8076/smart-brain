@@ -338,7 +338,7 @@ export default function NotesPage() {
         </div>
 
         {/* CONTENT */}
-        <div className="flex-1 overflow-auto bg-zinc-100 p-4 dark:bg-zinc-900">
+        <div className="flex-1 overflow-auto border bg-zinc-100 shadow-[0_10px_10px_rgba(8,_112,_184,_0.7)] dark:bg-zinc-950">
           {isEditing ? (
             <RichTextEditor
               content={text}
