@@ -9,6 +9,46 @@ const {
 
 const config = {
   darkMode: ["class"],
+
+  safelist: [
+    "bg-blue-500/10",
+    "text-blue-700",
+    "dark:bg-blue-400/15",
+    "dark:text-blue-300",
+
+    "bg-amber-500/10",
+    "text-amber-800",
+    "dark:bg-amber-400/15",
+    "dark:text-amber-300",
+
+    "bg-emerald-500/10",
+    "text-emerald-800",
+    "dark:bg-emerald-400/15",
+    "dark:text-emerald-300",
+
+    "bg-rose-500/10",
+    "text-rose-800",
+    "dark:bg-rose-400/15",
+    "dark:text-rose-300",
+
+    "bg-zinc-500/10",
+    "text-zinc-700",
+    "dark:bg-zinc-400/15",
+    "dark:text-zinc-200",
+
+    "border-l-blue-500",
+    "border-l-amber-500",
+    "border-l-emerald-500",
+    "border-l-rose-500",
+    "border-l-zinc-400",
+
+    "bg-blue-500/70",
+    "bg-amber-500/70",
+    "bg-emerald-500/70",
+    "bg-rose-500/70",
+    "bg-zinc-500/60",
+  ],
+
   content: [
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
