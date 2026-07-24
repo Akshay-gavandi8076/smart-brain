@@ -3,9 +3,15 @@
 import * as React from "react";
 import { useMemo, useState } from "react";
 import { Doc, Id } from "@/convex/_generated/dataModel";
-import type { JobStatus } from "./page";
 import JobCard from "./job-card";
 import { cn } from "@/lib/utils";
+
+import {
+  JOB_STATUSES,
+  JOB_STATUS_CONFIG,
+  STATUS_OPTIONS,
+  type JobStatus,
+} from "@/lib/jobs";
 
 import {
   DndContext,
@@ -21,14 +27,6 @@ import {
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 
-const COLUMNS: { key: JobStatus; status: string }[] = [
-  { key: "applied", status: "Applied" },
-  { key: "interview", status: "Interview" },
-  { key: "offer", status: "Offer" },
-  { key: "rejected", status: "Rejected" },
-  { key: "archived", status: "Archived" },
-];
-
 function EmptyColumnState({ label }: { label: string }) {
   return (
     <div className="rounded-xl border border-dashed border-zinc-300 bg-background/40 p-4 text-center text-sm text-muted-foreground dark:border-zinc-700">
@@ -38,44 +36,8 @@ function EmptyColumnState({ label }: { label: string }) {
   );
 }
 
-// Tailwind-only color mapping (works with light + dark)
-const STATUS_STYLES: Record<
-  JobStatus,
-  {
-    rail: string;
-    pill: string;
-  }
-> = {
-  applied: {
-    rail: "bg-blue-500/70 dark:bg-blue-400/70",
-    pill: "bg-blue-500/10 text-blue-700 dark:bg-blue-400/15 dark:text-blue-300",
-  },
-  interview: {
-    rail: "bg-amber-500/70 dark:bg-amber-400/70",
-    pill: "bg-amber-500/10 text-amber-800 dark:bg-amber-400/15 dark:text-amber-300",
-  },
-  offer: {
-    rail: "bg-emerald-500/70 dark:bg-emerald-400/70",
-    pill: "bg-emerald-500/10 text-emerald-800 dark:bg-emerald-400/15 dark:text-emerald-300",
-  },
-  rejected: {
-    rail: "bg-rose-500/70 dark:bg-rose-400/70",
-    pill: "bg-rose-500/10 text-rose-800 dark:bg-rose-400/15 dark:text-rose-300",
-  },
-  archived: {
-    rail: "bg-zinc-500/60 dark:bg-zinc-400/60",
-    pill: "bg-zinc-500/10 text-zinc-700 dark:bg-zinc-400/15 dark:text-zinc-200",
-  },
-};
-
 function isJobStatus(value: unknown): value is JobStatus {
-  return (
-    value === "applied" ||
-    value === "interview" ||
-    value === "offer" ||
-    value === "rejected" ||
-    value === "archived"
-  );
+  return typeof value === "string" && JOB_STATUSES.includes(value as JobStatus);
 }
 
 /**
@@ -194,12 +156,13 @@ export default function JobList({
       onDragEnd={onDragEnd}
     >
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-        {COLUMNS.map((col) => {
-          const styles = STATUS_STYLES[col.key];
-          const jobsInCol = grouped[col.key];
+        {STATUS_OPTIONS.map((col) => {
+          const status = JOB_STATUS_CONFIG[col.value];
+          const jobsInCol = grouped[col.value];
+          console.log(status);
 
           return (
-            <DroppableColumn key={col.key} statusKey={col.key}>
+            <DroppableColumn key={col.value} statusKey={col.value}>
               <section className="rounded-2xl bg-zinc-100 p-3 shadow-sm dark:bg-zinc-900">
                 {/* Sticky column header */}
                 <div className="sticky z-20" style={{ top: stickyOffsetPx }}>
@@ -208,14 +171,14 @@ export default function JobList({
                     <span
                       className={cn(
                         "absolute bottom-2 left-2 top-2 w-[3px] rounded-full",
-                        styles.rail,
+                        status.railClass,
                       )}
                       aria-hidden="true"
                     />
                     <span
                       className={cn(
                         "absolute bottom-2 right-2 top-2 w-[3px] rounded-full",
-                        styles.rail,
+                        status.railClass,
                       )}
                       aria-hidden="true"
                     />
@@ -224,10 +187,10 @@ export default function JobList({
                       <div
                         className={cn(
                           "rounded-full px-2.5 py-1 text-xs font-semibold tracking-wide",
-                          styles.pill,
+                          status.badgeClass,
                         )}
                       >
-                        {col.status}
+                        {col.label}
                       </div>
 
                       <span className="rounded-full bg-zinc-200 px-2 py-0.5 text-xs dark:bg-zinc-800">
@@ -241,7 +204,7 @@ export default function JobList({
 
                 <div className="space-y-3">
                   {jobsInCol.length === 0 ? (
-                    <EmptyColumnState label={col.status} />
+                    <EmptyColumnState label={col.label} />
                   ) : (
                     jobsInCol.map((job) => (
                       <DraggableJob key={job._id} job={job} />

@@ -35,22 +35,7 @@ import EditJobButton from "./edit-job-button";
 import JobDetailDialog from "./job-detail-dialog";
 import { cn } from "@/lib/utils";
 import { formatJobDate, getJobUpdatedAt } from "@/lib/formatDate";
-
-const STATUS_OPTIONS = [
-  { value: "applied", label: "Applied" },
-  { value: "interview", label: "Interview" },
-  { value: "offer", label: "Offer" },
-  { value: "rejected", label: "Rejected" },
-  { value: "archived", label: "Archived" },
-] as const;
-
-const STATUS_BORDERS = {
-  applied: "border-l-blue-500",
-  interview: "border-l-amber-500",
-  offer: "border-l-emerald-500",
-  rejected: "border-l-rose-500",
-  archived: "border-l-zinc-400",
-} as const;
+import { STATUS_OPTIONS, JOB_STATUS_CONFIG } from "@/lib/jobs";
 
 type DragHandleProps = React.HTMLAttributes<HTMLButtonElement>;
 
@@ -65,8 +50,7 @@ export default function JobCard({
   const deleteJob = useMutation(api.jobs.deleteJob);
   const [detailOpen, setDetailOpen] = React.useState(false);
 
-  const statusLabel =
-    STATUS_OPTIONS.find((s) => s.value === job.status)?.label ?? job.status;
+  const statusLabel = JOB_STATUS_CONFIG[job.status].label;
 
   const updatedAt = getJobUpdatedAt(job);
 
@@ -75,7 +59,7 @@ export default function JobCard({
       <Card
         className={cn(
           "border-l-2 shadow-sm transition-all hover:shadow-md",
-          STATUS_BORDERS[job.status],
+          JOB_STATUS_CONFIG[job.status].borderClass,
         )}
       >
         <CardHeader className="space-y-1">

@@ -8,8 +8,9 @@ import { dark } from "@clerk/themes";
 import React from "react";
 import { useTheme } from "next-themes";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { clientEnv } from "@/lib/env/client";
 
-const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+const convex = new ConvexReactClient(clientEnv.NEXT_PUBLIC_CONVEX_URL!);
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -27,8 +28,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
 }
 
 // TODO:
-// ConvexProviderWithClerk expects a different Clerk UseAuth type.
-// Investigate Clerk/Convex version alignment and remove this cast.
+// `useAuth` from Clerk and `ConvexProviderWithClerk` have incompatible
+// TypeScript definitions with the current dependency versions.
+// Remove this cast after upgrading Clerk/Convex to compatible versions.
 function OtherProviders({ children }: { children: React.ReactNode }) {
   const { resolvedTheme } = useTheme();
 
@@ -37,7 +39,7 @@ function OtherProviders({ children }: { children: React.ReactNode }) {
       appearance={{
         baseTheme: resolvedTheme === "dark" ? dark : undefined,
       }}
-      publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+      publishableKey={clientEnv.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
     >
       <ConvexProviderWithClerk client={convex} useAuth={useAuth as any}>
         {children}

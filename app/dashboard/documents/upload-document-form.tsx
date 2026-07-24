@@ -48,6 +48,10 @@ export default function UploadDocumentForm({
     },
   });
 
+  const uploadResponseSchema = z.object({
+    storageId: z.string(),
+  });
+
   const onSubmit = async (values: z.infer<typeof uploadDocumentFormSchema>) => {
     try {
       const url = await generateUploadUrl();
@@ -62,7 +66,9 @@ export default function UploadDocumentForm({
         throw new Error("Failed to upload the file");
       }
 
-      const { storageId } = await result.json();
+      const json = await result.json();
+
+      const { storageId } = uploadResponseSchema.parse(json);
 
       await createDocument({
         title: values.title,

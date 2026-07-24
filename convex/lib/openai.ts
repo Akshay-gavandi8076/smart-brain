@@ -1,7 +1,8 @@
 import OpenAI from "openai";
+import { serverEnv } from "../../lib/env/server";
 
 export const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: serverEnv.OPENAI_API_KEY,
 });
 
 export async function embed(text: string): Promise<number[]> {

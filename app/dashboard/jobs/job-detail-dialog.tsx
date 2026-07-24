@@ -23,40 +23,7 @@ import {
 import { formatJobDate, getJobUpdatedAt } from "@/lib/formatDate";
 import EditJobButton from "./edit-job-button";
 import { cn } from "@/lib/utils";
-
-const STATUS_LABELS: Record<Doc<"jobs">["status"], string> = {
-  applied: "Applied",
-  interview: "Interview",
-  offer: "Offer",
-  rejected: "Rejected",
-  archived: "Archived",
-};
-
-const STATUS_STYLES: Record<
-  Doc<"jobs">["status"],
-  { badge: string; border: string }
-> = {
-  applied: {
-    badge: "bg-blue-500/10 text-blue-700 dark:text-blue-300",
-    border: "border-l-blue-500",
-  },
-  interview: {
-    badge: "bg-amber-500/10 text-amber-800 dark:text-amber-300",
-    border: "border-l-amber-500",
-  },
-  offer: {
-    badge: "bg-emerald-500/10 text-emerald-800 dark:text-emerald-300",
-    border: "border-l-emerald-500",
-  },
-  rejected: {
-    badge: "bg-rose-500/10 text-rose-800 dark:text-rose-300",
-    border: "border-l-rose-500",
-  },
-  archived: {
-    badge: "bg-zinc-500/10 text-zinc-700 dark:text-zinc-200",
-    border: "border-l-zinc-400",
-  },
-};
+import { JOB_STATUS_CONFIG } from "@/lib/jobs";
 
 interface JobDetailDialogProps {
   job: Doc<"jobs"> | null;
@@ -71,7 +38,7 @@ export default function JobDetailDialog({
 }: JobDetailDialogProps) {
   if (!job) return null;
 
-  const styles = STATUS_STYLES[job.status];
+  const statusConfig = JOB_STATUS_CONFIG[job.status];
   const updatedAt = getJobUpdatedAt(job);
 
   return (
@@ -79,7 +46,7 @@ export default function JobDetailDialog({
       <DialogContent
         className={cn(
           "gap-0 overflow-hidden border-l-4 p-0 sm:max-w-xl",
-          styles.border,
+          statusConfig.borderClass,
         )}
       >
         {/* Header */}
@@ -88,10 +55,10 @@ export default function JobDetailDialog({
             <span
               className={cn(
                 "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold",
-                styles.badge,
+                statusConfig.badgeClass,
               )}
             >
-              {STATUS_LABELS[job.status]}
+              {statusConfig.label}
             </span>
           </div>
           <DialogTitle className="text-left text-2xl leading-tight">
@@ -144,7 +111,9 @@ export default function JobDetailDialog({
               </p>
             </Section>
           ) : (
-            <p className="text-sm italic text-muted-foreground">No notes added.</p>
+            <p className="text-sm italic text-muted-foreground">
+              No notes added.
+            </p>
           )}
         </div>
 

@@ -1,7 +1,9 @@
+import { serverEnv } from "../lib/env/server";
+
 const authConfig = {
   providers: [
     {
-      domain: process.env.CLERK_DOMAIN || process.env.NEXT_PUBLIC_CLERK_DOMAIN,
+      domain: serverEnv.CLERK_DOMAIN,
       applicationID: "convex",
     },
   ],
