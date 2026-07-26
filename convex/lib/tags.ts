@@ -1,13 +1,5 @@
 import type { MutationCtx } from "../_generated/server";
-
-export function parseTagString(tags?: string): string[] {
-  if (!tags?.trim()) return [];
-  return tags.split(",").map((tag) => tag.trim()).filter(Boolean);
-}
-
-export function normalizeTagName(tag: string): string {
-  return tag.trim().toLowerCase();
-}
+import { normalizeTagName } from "../../lib/tags";
 
 /** Upsert tags and increment usage count for each one. */
 export async function syncTags(
@@ -16,8 +8,10 @@ export async function syncTags(
   tagNames: string[],
 ): Promise<void> {
   for (const rawTag of tagNames) {
-    const normalized = normalizeTagName(rawTag);
-    if (!normalized) continue;
+    const trimmed = rawTag.trim();
+    if (!trimmed) continue;
+
+    const normalized = normalizeTagName(trimmed);
 
     const existing = await ctx.db
       .query("tags")
@@ -34,7 +28,7 @@ export async function syncTags(
     }
 
     await ctx.db.insert("tags", {
-      name: rawTag.trim(),
+      name: trimmed,
       normalized,
       tokenIdentifier: userId,
       usageCount: 1,
@@ -50,8 +44,6 @@ export async function syncAddedTags(
   nextTags: string[],
 ): Promise<void> {
   const previous = new Set(previousTags.map(normalizeTagName));
-  const added = nextTags.filter(
-    (tag) => !previous.has(normalizeTagName(tag)),
-  );
+  const added = nextTags.filter((tag) => !previous.has(normalizeTagName(tag)));
   await syncTags(ctx, userId, added);
 }

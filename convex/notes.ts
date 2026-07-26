@@ -9,7 +9,8 @@ import {
 import { internal } from "./_generated/api";
 import { getUserId, requireUserId } from "./lib/auth";
 import { embed } from "./lib/openai";
-import { parseTagString, syncAddedTags, syncTags } from "./lib/tags";
+import { syncAddedTags, syncTags } from "./lib/tags";
+import { parseTags } from "../lib/tags";
 
 export const getNote = query({
   args: {
@@ -81,7 +82,7 @@ export const createNote = mutation({
   },
   async handler(ctx, args) {
     const userId = await requireUserId(ctx);
-    const tags = parseTagString(args.tags);
+    const tags = parseTags(args.tags);
 
     const noteId = await ctx.db.insert("notes", {
       title: args.title,
@@ -115,8 +116,8 @@ export const updateNote = mutation({
     if (!note) throw new ConvexError("Note not found");
     if (note.tokenIdentifier !== userId) throw new ConvexError("Unauthorized");
 
-    const previousTags = parseTagString(note.tags);
-    const nextTags = parseTagString(args.tags);
+    const previousTags = parseTags(note.tags);
+    const nextTags = parseTags(args.tags);
     await syncAddedTags(ctx, userId, previousTags, nextTags);
 
     await ctx.db.patch(args.noteId, {
