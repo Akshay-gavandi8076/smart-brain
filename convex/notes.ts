@@ -1,4 +1,3 @@
-// convex/notes.ts
 import { ConvexError, v } from "convex/values";
 import {
   internalAction,
@@ -162,10 +161,18 @@ export const getNotesByDocumentId = query({
     const document = await ctx.db.get(args.documentId);
     if (!document || document.tokenIdentifier !== userId) return [];
 
-    return await ctx.db
+    const notes = await ctx.db
       .query("notes")
       .withIndex("by_documentId", (q) => q.eq("documentId", args.documentId))
       .filter((q) => q.eq(q.field("tokenIdentifier"), userId))
       .collect();
+
+    notes.sort((a, b) => {
+      const aTime = a.updatedAt ?? a._creationTime;
+      const bTime = b.updatedAt ?? b._creationTime;
+      return bTime - aTime;
+    });
+
+    return notes;
   },
 });

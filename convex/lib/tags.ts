@@ -1,5 +1,5 @@
-import type { MutationCtx } from "../_generated/server";
 import { normalizeTagName } from "../../lib/tags";
+import type { MutationCtx } from "../_generated/server";
 
 /** Upsert tags and increment usage count for each one. */
 export async function syncTags(
