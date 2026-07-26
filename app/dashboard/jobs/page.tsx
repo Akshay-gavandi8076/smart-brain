@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Doc } from "@/convex/_generated/dataModel";
@@ -17,11 +17,7 @@ import { badgeVariants } from "@/components/ui/badge";
 import { btnIconStyles } from "@/styles/styles";
 
 export type JobStatus =
-  | "applied"
-  | "interview"
-  | "offer"
-  | "rejected"
-  | "archived";
+  "applied" | "interview" | "offer" | "rejected" | "archived";
 
 function norm(s: string) {
   return s.trim().toLowerCase();
@@ -41,8 +37,6 @@ function uniqSorted(values: string[]) {
 export default function JobsPage() {
   const jobs = useQuery(api.jobs.getJobs);
 
-  const [localJobs, setLocalJobs] = useState<Doc<"jobs">[] | null>(null);
-
   // --------- Filters / Search ----------
   const [search, setSearch] = useState("");
   const [companyFilters, setCompanyFilters] = useState<string[]>([]);
@@ -52,21 +46,17 @@ export default function JobsPage() {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const blurTimerRef = useRef<number | null>(null);
 
-  useEffect(() => {
-    if (!jobs) return;
-    setLocalJobs(jobs);
-  }, [jobs]);
-
   // Build suggestion sources from existing jobs (client-side, fast, no extra schema/index)
   const allCompanies = useMemo(() => {
-    const source = localJobs ?? [];
+    // const source = localJobs ?? [];
+    const source = jobs ?? [];
     return uniqSorted(source.map((j) => j.company));
-  }, [localJobs]);
+  }, [jobs]);
 
   const allTitles = useMemo(() => {
-    const source = localJobs ?? [];
+    const source = jobs ?? [];
     return uniqSorted(source.map((j) => j.title));
-  }, [localJobs]);
+  }, [jobs]);
 
   const filteredCompanySuggestions = useMemo(() => {
     const q = norm(search);
@@ -130,7 +120,7 @@ export default function JobsPage() {
 
   // Apply filters + free-text search BEFORE grouping (keeps JobList untouched)
   const filteredJobs = useMemo(() => {
-    const source = localJobs ?? [];
+    const source = jobs ?? [];
 
     let out = source;
 
@@ -161,7 +151,7 @@ export default function JobsPage() {
     }
 
     return out;
-  }, [localJobs, companyFilters, titleFilters, search]);
+  }, [jobs, companyFilters, titleFilters, search]);
 
   const grouped = useMemo(() => {
     const empty: Record<JobStatus, Doc<"jobs">[]> = {
@@ -177,7 +167,7 @@ export default function JobsPage() {
   }, [filteredJobs]);
 
   // Loading state
-  if (!jobs || !localJobs) {
+  if (!jobs) {
     return (
       <main className="flex h-full w-full flex-col">
         <header className="sticky top-0 z-30 border-b bg-background">

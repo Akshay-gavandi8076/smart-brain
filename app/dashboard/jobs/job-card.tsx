@@ -36,6 +36,7 @@ import JobDetailDialog from "./job-detail-dialog";
 import { cn } from "@/lib/utils";
 import { formatJobDate, getJobUpdatedAt } from "@/lib/formatDate";
 import { STATUS_OPTIONS, JOB_STATUS_CONFIG } from "@/lib/jobs";
+import { DeleteJobButton } from "./delete-job-button";
 
 type DragHandleProps = React.HTMLAttributes<HTMLButtonElement>;
 
@@ -47,7 +48,6 @@ export default function JobCard({
   dragHandleProps?: DragHandleProps;
 }) {
   const updateStatus = useMutation(api.jobs.updateJobStatus);
-  const deleteJob = useMutation(api.jobs.deleteJob);
   const [detailOpen, setDetailOpen] = React.useState(false);
 
   const statusLabel = JOB_STATUS_CONFIG[job.status].label;
@@ -164,16 +164,11 @@ export default function JobCard({
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <EditJobButton job={job} />
+          <div className="flex gap-2">
+            <EditJobButton job={job} />
 
-          <Button
-            variant="destructive"
-            size="icon"
-            onClick={() => deleteJob({ jobId: job._id })}
-            aria-label="Delete job"
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
+            <DeleteJobButton jobId={job._id} iconOnly />
+          </div>
         </CardFooter>
       </Card>
 

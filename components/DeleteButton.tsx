@@ -18,10 +18,12 @@ import { useToast } from "./ui/use-toast";
 
 type DeleteButtonProps<T> = {
   id: T;
-  entityType: "document" | "note";
-  onSuccessRedirect: string;
+  entityType: "document" | "note" | "job";
+  onSuccessRedirect?: string;
   onDelete: (args: { id: T }) => Promise<void>;
   confirmationMessage: string;
+  iconOnly?: boolean;
+  showLabel?: boolean;
 };
 
 export function DeleteButton<T>({
@@ -30,6 +32,8 @@ export function DeleteButton<T>({
   onSuccessRedirect,
   onDelete,
   confirmationMessage,
+  iconOnly = false,
+  showLabel = false,
 }: DeleteButtonProps<T>) {
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -40,7 +44,9 @@ export function DeleteButton<T>({
     setIsLoading(true);
     try {
       await onDelete({ id });
-      router.push(onSuccessRedirect);
+      if (onSuccessRedirect) {
+        router.push(onSuccessRedirect);
+      }
       toast({
         title: "Successfully deleted",
         description: "The item has been deleted successfully.",
@@ -58,10 +64,14 @@ export function DeleteButton<T>({
 
   return (
     <AlertDialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
-      <AlertDialogTrigger>
-        <Button variant="destructive" className={btnStyles}>
+      <AlertDialogTrigger asChild>
+        <Button
+          variant="destructive"
+          className={iconOnly ? "h-10 w-10" : showLabel ? btnStyles : btnStyles}
+          size={iconOnly ? "icon" : "default"}
+        >
           <TrashIcon className={btnIconStyles} />
-          <span className="hidden sm:inline">Delete</span>
+          {!iconOnly && <span className="hidden sm:inline">Delete</span>}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>

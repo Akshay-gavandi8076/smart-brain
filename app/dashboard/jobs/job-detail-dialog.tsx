@@ -11,7 +11,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import DeleteJobButton from "./delete-job-button";
 import {
   ExternalLink,
   Calendar,
@@ -24,6 +23,7 @@ import { formatJobDate, getJobUpdatedAt } from "@/lib/formatDate";
 import EditJobButton from "./edit-job-button";
 import { cn } from "@/lib/utils";
 import { JOB_STATUS_CONFIG } from "@/lib/jobs";
+import { DeleteJobButton } from "./delete-job-button";
 
 interface JobDetailDialogProps {
   job: Doc<"jobs"> | null;
@@ -126,7 +126,6 @@ export default function JobDetailDialog({
             <EditJobButton job={job} showLabel />
             <DeleteJobButton
               jobId={job._id}
-              showLabel
               onDeleted={() => onOpenChange(false)}
             />
           </div>

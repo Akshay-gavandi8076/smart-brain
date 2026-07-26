@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SearchForm } from "./search-form";
 import { api } from "@/convex/_generated/api";
 import Link from "next/link";
@@ -49,23 +49,14 @@ export default function SearchPage() {
     typeof api.search.searchAction._returnType | null
   >(null);
 
-  useEffect(() => {
-    const searchResults = localStorage.getItem("searchResults");
-    if (searchResults) {
-      setResults(JSON.parse(searchResults));
-    }
-  }, []);
-
   const handleSearchResultsUpdate = (
     searchResult: typeof api.search.searchAction._returnType,
   ) => {
     setResults(searchResult);
-    localStorage.setItem("searchResults", JSON.stringify(searchResult));
   };
 
   const handleClearResults = () => {
     setResults(null);
-    localStorage.removeItem("searchResults");
   };
 
   return (

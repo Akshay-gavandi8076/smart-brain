@@ -61,7 +61,15 @@ export default function Header() {
           </div>
           <div className="flex items-center space-x-4">
             <div
+              role="button"
+              tabIndex={0}
               onClick={toggleTheme}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  toggleTheme();
+                }
+              }}
               className="flex cursor-pointer items-center text-sm font-semibold hover:text-slate-500"
             >
               {isDarkMode ? (

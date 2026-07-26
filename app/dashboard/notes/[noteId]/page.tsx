@@ -242,7 +242,10 @@ export default function NotesPage() {
                     PDF
                   </Button>
 
-                  <DeleteNoteButton noteId={note._id} />
+                  <DeleteNoteButton
+                    noteId={note._id}
+                    onSuccessRedirect="/dashboard/notes"
+                  />
                 </>
               )}
             </div>

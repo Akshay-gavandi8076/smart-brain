@@ -7,6 +7,7 @@ import { btnIconStyles } from "@/styles/styles";
 import { htmlToText } from "@/lib/html";
 import NoteForm from "../document-note-form";
 import { useRouter } from "next/navigation";
+import { DeleteNoteButton } from "@/app/dashboard/notes/[noteId]/delete-note-button";
 
 type DocumentWithUrl = Doc<"documents"> & {
   documentUrl: string | null;
@@ -16,7 +17,6 @@ interface NoteSectionProps {
   showNoteForm: boolean;
   setShowNoteForm: (show: boolean) => void;
   notes: Doc<"notes">[];
-  deleteNote: (params: { noteId: Id<"notes"> }) => Promise<null>;
   document: DocumentWithUrl;
   router: ReturnType<typeof useRouter>;
 }
@@ -25,7 +25,6 @@ export default function NoteSection({
   showNoteForm,
   setShowNoteForm,
   notes,
-  deleteNote,
   document,
   router,
 }: NoteSectionProps) {
@@ -60,22 +59,17 @@ export default function NoteSection({
                     : preview}
                 </p>
 
-                <div className="flex gap-2">
+                <div className="flex items-center gap-2">
                   <Button
                     variant="outline"
                     size="icon"
+                    className="h-10 w-10"
                     onClick={() => router.push(`/dashboard/notes/${note._id}`)}
                   >
                     <Eye className={btnIconStyles} />
                   </Button>
 
-                  <Button
-                    variant="destructive"
-                    size="icon"
-                    onClick={() => deleteNote({ noteId: note._id })}
-                  >
-                    <Trash className={btnIconStyles} />
-                  </Button>
+                  <DeleteNoteButton noteId={note._id} iconOnly />
                 </div>
               </div>
             );

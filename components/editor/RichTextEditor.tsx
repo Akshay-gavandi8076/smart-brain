@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import { EditorContent, useEditor } from "@tiptap/react";
 
@@ -27,8 +27,6 @@ function RichTextEditor({
   editable = true,
   className,
 }: RichTextEditorProps) {
-  const [, setEditorState] = useState(0);
-
   const editor = useEditor({
     extensions: editorExtensions,
 
@@ -38,14 +36,6 @@ function RichTextEditor({
 
     onUpdate({ editor }) {
       onChange?.(editor.getHTML());
-    },
-
-    onSelectionUpdate() {
-      setEditorState((value) => value + 1);
-    },
-
-    onTransaction() {
-      setEditorState((value) => value + 1);
     },
 
     editorProps: {

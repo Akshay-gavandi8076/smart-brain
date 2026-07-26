@@ -120,7 +120,9 @@ export default function DocumentPage({
           toggleMinimize={toggleMinimize}
           showNoteForm={showNoteForm}
           setShowNoteForm={setShowNoteForm}
-          notes={notes}
+          notes={
+            fetchedNotes && !(fetchedNotes instanceof Error) ? fetchedNotes : []
+          }
           deleteNote={deleteNote}
           document={document}
           router={router}

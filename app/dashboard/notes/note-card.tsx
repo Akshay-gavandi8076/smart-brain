@@ -66,7 +66,10 @@ export function NoteCard({ note }: NoteCardProps) {
           </Link>
         </Button>
 
-        <DeleteNoteButton noteId={note._id} />
+        <DeleteNoteButton
+          noteId={note._id}
+          onSuccessRedirect="/dashboard/notes"
+        />
       </CardFooter>
     </Card>
   );

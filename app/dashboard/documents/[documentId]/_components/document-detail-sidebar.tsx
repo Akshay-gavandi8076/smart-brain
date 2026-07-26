@@ -73,7 +73,7 @@ export default function DocumentDetailSidebar({
               showNoteForm={showNoteForm}
               setShowNoteForm={setShowNoteForm}
               notes={notes}
-              deleteNote={deleteNote}
+
               document={document}
               router={router}
             />

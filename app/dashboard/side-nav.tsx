@@ -92,7 +92,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isExpanded, toggleSidebar }) => {
             />
             <hr className="my-2 w-full border-t" />
             <div
+              role="button"
+              tabIndex={0}
               onClick={handleSignOut}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  handleSignOut();
+                }
+              }}
               className="mb-2 flex w-full cursor-pointer items-center rounded-md p-2 hover:bg-accent hover:text-accent-foreground"
             >
               <LogOut className="h-5 w-5" />

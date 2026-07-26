@@ -1,10 +1,16 @@
+// lib/editor.ts
 export function normalizeEditorContent(content: string | undefined | null) {
   if (!content) {
     return "";
   }
 
-  const parser = new DOMParser();
+  // DOMParser is only available in the browser.
+  // During SSR, assume existing content is already HTML.
+  if (typeof window === "undefined") {
+    return content;
+  }
 
+  const parser = new DOMParser();
   const document = parser.parseFromString(content, "text/html");
 
   const hasHTML = document.body.children.length > 0;

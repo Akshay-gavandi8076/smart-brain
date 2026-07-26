@@ -14,8 +14,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { LoadingButton } from "@/components/loading-button";
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { btnIconStyles } from "@/styles/styles";
+import { toast } from "@/components/ui/use-toast";
 
 const searchFormSchema = z.object({
   search: z
@@ -42,9 +43,14 @@ export function SearchForm({ setResults }: SearchFormProps) {
     try {
       const searchResults = await searchAction({ search: values.search });
       setResults(searchResults);
-      form.reset();
     } catch (error) {
       console.error("Error during search:", error);
+
+      toast({
+        title: "Search unavailable",
+        description: "AI search service is temporarily unavailable.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -60,16 +66,34 @@ export function SearchForm({ setResults }: SearchFormProps) {
           render={({ field }) => (
             <FormItem className="flex-1">
               <FormControl>
-                <Input
-                  placeholder="Search over all your notes and documents using vector searching"
-                  {...field}
-                  aria-label="Search"
-                />
+                <div className="relative">
+                  <Input
+                    placeholder="Search over all your notes and documents using vector searching"
+                    {...field}
+                    aria-label="Search"
+                    className="pr-10"
+                  />
+
+                  {field.value && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        form.setValue("search", "");
+                      }}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 rounded-sm p-1 text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                      aria-label="Clear search"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
               </FormControl>
+
               <FormMessage />
             </FormItem>
           )}
         />
+
         <LoadingButton
           isLoading={form.formState.isSubmitting}
           loadingText="Searching..."
