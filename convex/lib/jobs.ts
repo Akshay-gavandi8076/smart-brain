@@ -1,5 +1,12 @@
 import { v } from "convex/values";
-import { JOB_STATUSES } from "../../lib/jobs";
+
+export const JOB_STATUSES = [
+  "applied",
+  "interview",
+  "offer",
+  "rejected",
+  "archived",
+] as const;
 
 export const jobStatusValidator = v.union(
   ...JOB_STATUSES.map((status) => v.literal(status)),

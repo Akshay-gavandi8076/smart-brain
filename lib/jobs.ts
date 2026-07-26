@@ -17,15 +17,7 @@ export const STATUS_OPTIONS = JOB_STATUSES.map((status) => ({
   label: status.charAt(0).toUpperCase() + status.slice(1),
 }));
 
-export const JOB_STATUS_CONFIG: Record<
-  JobStatus,
-  {
-    label: string;
-    badgeClass: string;
-    borderClass: string;
-    railClass: string;
-  }
-> = {
+export const JOB_STATUS_CONFIG = {
   applied: {
     label: "Applied",
     badgeClass:
@@ -33,6 +25,7 @@ export const JOB_STATUS_CONFIG: Record<
     borderClass: "border-l-blue-500",
     railClass: "bg-blue-500/70 dark:bg-blue-400/70",
   },
+
   interview: {
     label: "Interview",
     badgeClass:
@@ -40,6 +33,7 @@ export const JOB_STATUS_CONFIG: Record<
     borderClass: "border-l-amber-500",
     railClass: "bg-amber-500/70 dark:bg-amber-400/70",
   },
+
   offer: {
     label: "Offer",
     badgeClass:
@@ -47,6 +41,7 @@ export const JOB_STATUS_CONFIG: Record<
     borderClass: "border-l-emerald-500",
     railClass: "bg-emerald-500/70 dark:bg-emerald-400/70",
   },
+
   rejected: {
     label: "Rejected",
     badgeClass:
@@ -54,6 +49,7 @@ export const JOB_STATUS_CONFIG: Record<
     borderClass: "border-l-rose-500",
     railClass: "bg-rose-500/70 dark:bg-rose-400/70",
   },
+
   archived: {
     label: "Archived",
     badgeClass:
