@@ -1,2 +1,2 @@
-export { default as RichTextEditor } from "./RichTextEditor";
-export { default as Toolbar } from "./Toolbar";
+export { default as RichTextEditor } from "./rich-text-editor";
+export { default as Toolbar } from "./toolbar";

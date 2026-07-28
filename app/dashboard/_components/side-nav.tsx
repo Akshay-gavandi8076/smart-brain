@@ -1,0 +1,116 @@
+"use client";
+
+import React from "react";
+import {
+  LogOut,
+  Search,
+  Menu,
+  X,
+  Home,
+  FilesIcon,
+  ClipboardPenIcon,
+  BriefcaseBusinessIcon,
+} from "lucide-react";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { usePathname, useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
+import { useClerk } from "@clerk/nextjs";
+import { ThemeToggle } from "@/components/layout/theme-toggle";
+
+interface SidebarItem {
+  name: string;
+  href: string;
+  icon: React.ElementType;
+}
+
+const sidebarItems: SidebarItem[] = [
+  { name: "Home", href: "/", icon: Home },
+  { name: "Search", href: "/dashboard/search", icon: Search },
+  { name: "Documents", href: "/dashboard/documents", icon: FilesIcon },
+  { name: "Notes", href: "/dashboard/notes", icon: ClipboardPenIcon },
+  { name: "Jobs", href: "/dashboard/jobs", icon: BriefcaseBusinessIcon },
+];
+
+interface SidebarProps {
+  isExpanded: boolean;
+  toggleSidebar: () => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ isExpanded, toggleSidebar }) => {
+  const pathname = usePathname();
+  const { setTheme, resolvedTheme } = useTheme();
+  const { signOut } = useClerk();
+  const isDarkMode = resolvedTheme === "dark";
+  const router = useRouter();
+
+  const handleThemeToggle = () => {
+    setTheme(isDarkMode ? "light" : "dark");
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.push("/");
+  };
+
+  return (
+    <div className="relative">
+      <div
+        className={`fixed left-0 top-0 h-full transform shadow-[0_10px_10px_rgba(8,_112,_184,_0.7)] transition-transform duration-300 ease-in-out ${
+          isExpanded ? "w-52 translate-x-0" : "w-16"
+        }`}
+      >
+        <nav className="flex h-full flex-col items-start p-2">
+          <div className="mt-4 flex w-full items-center justify-between px-2">
+            <button onClick={toggleSidebar} className="focus:outline-none">
+              {isExpanded ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </button>
+          </div>
+          <hr className="my-2 w-full border-t" />
+          {sidebarItems.map((item, index) => (
+            <Link key={index} href={item.href} className="w-full">
+              <span
+                className={cn(
+                  "group flex items-center rounded-md px-2 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
+                  pathname === item.href ? "bg-accent" : "bg-transparent",
+                )}
+              >
+                <item.icon className="h-5 w-5" />
+                {isExpanded && <span className="ml-2">{item.name}</span>}
+              </span>
+            </Link>
+          ))}
+          <div className="mt-auto w-full">
+            <ThemeToggle
+              isDarkMode={isDarkMode}
+              isExpanded={isExpanded}
+              toggleTheme={handleThemeToggle}
+            />
+            <hr className="my-2 w-full border-t" />
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={handleSignOut}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  handleSignOut();
+                }
+              }}
+              className="mb-2 flex w-full cursor-pointer items-center rounded-md p-2 hover:bg-accent hover:text-accent-foreground"
+            >
+              <LogOut className="h-5 w-5" />
+              {isExpanded && <span className="ml-2">Log Out</span>}
+            </div>
+          </div>
+        </nav>
+      </div>
+    </div>
+  );
+};
+
+export default Sidebar;

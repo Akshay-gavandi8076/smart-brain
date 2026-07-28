@@ -13,8 +13,8 @@ import { ConvexError, v } from "convex/values";
 import { internal } from "./_generated/api";
 import OpenAI from "openai";
 import { Id } from "./_generated/dataModel";
-import { getUserId, requireUserId } from "./lib/auth";
-import { embed, openai } from "./lib/openai";
+import { getUserId, requireUserId } from "./helpers/auth";
+import { embed, openai } from "./helpers/openai";
 
 export async function hasAccessToDocument(
   ctx: MutationCtx | QueryCtx,

@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Authenticated, AuthLoading } from "convex/react";
 import Image from "next/image";
-import MobileHeader from "@/components/MobileHeader";
+import MobileHeader from "@/components/layout/mobile-header";
 
 export default function Header() {
   const { setTheme, resolvedTheme } = useTheme();

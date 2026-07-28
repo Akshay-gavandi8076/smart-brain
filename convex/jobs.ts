@@ -1,7 +1,7 @@
 import { ConvexError, v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { getUserId, requireUserId } from "./lib/auth";
-import { jobStatusValidator } from "./lib/jobs";
+import { getUserId, requireUserId } from "./helpers/auth";
+import { jobStatusValidator } from "./helpers/jobs";
 
 export const getJobs = query({
   args: {},

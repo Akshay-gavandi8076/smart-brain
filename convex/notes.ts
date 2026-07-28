@@ -6,9 +6,9 @@ import {
   query,
 } from "./_generated/server";
 import { internal } from "./_generated/api";
-import { getUserId, requireUserId } from "./lib/auth";
-import { embed } from "./lib/openai";
-import { syncAddedTags, syncTags } from "./lib/tags";
+import { getUserId, requireUserId } from "./helpers/auth";
+import { embed } from "./helpers/openai";
+import { syncAddedTags, syncTags } from "./helpers/tags";
 import { parseTags } from "../lib/tags";
 
 export const getNote = query({

@@ -1,7 +1,7 @@
 import { mutation, query } from "./_generated/server";
 import { ConvexError, v } from "convex/values";
-import { getUserId, requireUserId } from "./lib/auth";
-import { syncTags } from "./lib/tags";
+import { getUserId, requireUserId } from "./helpers/auth";
+import { syncTags } from "./helpers/tags";
 import { normalizeTagName } from "../lib/tags";
 
 export const getTags = query({

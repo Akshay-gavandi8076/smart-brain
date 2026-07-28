@@ -1,0 +1,47 @@
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Doc } from "@/convex/_generated/dataModel";
+import { Eye } from "lucide-react";
+import Link from "next/link";
+import { TagsList } from "@/components/shared/tags-list";
+import { parseTags } from "@/lib/tags";
+import { DocumentDescription } from "./document-description";
+import { DeleteDocumentButton } from "../[documentId]/_components/delete-document-button";
+
+interface DocumentCardProps {
+  document: Doc<"documents">;
+}
+
+export function DocumentCard({ document }: DocumentCardProps) {
+  const { title, description, tags, _id } = document;
+
+  return (
+    <Card className="shadow-[0_10px_10px_rgba(8,_112,_184,_0.7)]">
+      <CardHeader>
+        <CardTitle className="text-2xl">{title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex min-h-[3rem] flex-col gap-4">
+          <DocumentDescription description={description} title={title} />
+          <TagsList tags={parseTags(tags)} />
+        </div>
+      </CardContent>
+
+      <CardFooter className="flex justify-between md:gap-2">
+        <Button variant="secondary" className="flex items-center gap-2" asChild>
+          <Link href={`/dashboard/documents/${_id}`}>
+            <Eye className="h-4 w-4" />
+            <span className="hidden sm:inline">View</span>
+          </Link>
+        </Button>
+        <DeleteDocumentButton documentId={_id} documentTitle={title} />
+      </CardFooter>
+    </Card>
+  );
+}

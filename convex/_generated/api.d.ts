@@ -11,10 +11,10 @@
 import type * as chats from "../chats.js";
 import type * as documents from "../documents.js";
 import type * as jobs from "../jobs.js";
-import type * as lib_auth from "../lib/auth.js";
-import type * as lib_jobs from "../lib/jobs.js";
-import type * as lib_openai from "../lib/openai.js";
-import type * as lib_tags from "../lib/tags.js";
+import type * as lib_auth from "../helpers/auth.js";
+import type * as lib_jobs from "../helpers/jobs.js";
+import type * as lib_openai from "../helpers/openai.js";
+import type * as lib_tags from "../helpers/tags.js";
 import type * as notes from "../notes.js";
 import type * as search from "../search.js";
 import type * as tags from "../tags.js";

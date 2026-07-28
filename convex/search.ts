@@ -1,9 +1,9 @@
 import { v } from "convex/values";
 import { action } from "./_generated/server";
-import { embed } from "./lib/openai";
+import { embed } from "./helpers/openai";
 import { api } from "./_generated/api";
 import { Doc } from "./_generated/dataModel";
-import { getUserId } from "./lib/auth";
+import { getUserId } from "./helpers/auth";
 
 export const searchAction = action({
   args: {
@@ -12,64 +12,64 @@ export const searchAction = action({
   handler: async (ctx, args) => {
     const userId = await getUserId(ctx);
     if (!userId) {
-      return null
+      return null;
     }
 
-    const embedding = await embed(args.search)
+    const embedding = await embed(args.search);
 
-    const notesResults = await ctx.vectorSearch('notes', 'by_embedding', {
+    const notesResults = await ctx.vectorSearch("notes", "by_embedding", {
       vector: embedding,
       limit: 5,
-      filter: (q) => q.eq('tokenIdentifier', userId),
-    })
+      filter: (q) => q.eq("tokenIdentifier", userId),
+    });
 
     const documentResults = await ctx.vectorSearch(
-      'documents',
-      'by_embedding',
+      "documents",
+      "by_embedding",
       {
         vector: embedding,
         limit: 5,
-        filter: (q) => q.eq('tokenIdentifier', userId),
-      }
-    )
+        filter: (q) => q.eq("tokenIdentifier", userId),
+      },
+    );
 
     const records: (
-      | { type: 'notes'; score: number; record: Doc<'notes'> }
-      | { type: 'documents'; score: number; record: Doc<'documents'> }
-    )[] = []
+      | { type: "notes"; score: number; record: Doc<"notes"> }
+      | { type: "documents"; score: number; record: Doc<"documents"> }
+    )[] = [];
 
     await Promise.all(
       notesResults.map(async (result) => {
         const note = await ctx.runQuery(api.notes.getNote, {
           noteId: result._id,
-        })
+        });
         if (!note) {
-          return
+          return;
         }
 
-        records.push({ type: 'notes', score: result._score, record: note })
-      })
-    )
+        records.push({ type: "notes", score: result._score, record: note });
+      }),
+    );
 
     await Promise.all(
       documentResults.map(async (result) => {
         const document = await ctx.runQuery(api.documents.getDocument, {
           documentId: result._id,
-        })
+        });
         if (!document) {
-          return
+          return;
         }
 
         records.push({
-          type: 'documents',
+          type: "documents",
           score: result._score,
           record: document,
-        })
-      })
-    )
+        });
+      }),
+    );
 
-    records.sort((a, b) => b.score - a.score)
+    records.sort((a, b) => b.score - a.score);
 
-    return records
+    return records;
   },
-})
+});

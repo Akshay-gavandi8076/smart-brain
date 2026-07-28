@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Sidebar from "./side-nav";
-import AuthGuard from "@/components/AuthGuard";
+import Sidebar from "./_components/side-nav";
+import AuthGuard from "@/components/auth/auth-guard";
 
 export default function DashboardLayout({
   children,
