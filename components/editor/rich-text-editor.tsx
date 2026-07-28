@@ -5,9 +5,9 @@ import { useEffect } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
 
 import { editorExtensions } from "./extensions";
-import Toolbar from "./toolbar";
 
 import { cn } from "@/lib/utils";
+import Toolbar from "./toolbar";
 
 interface RichTextEditorProps {
   content: string;
