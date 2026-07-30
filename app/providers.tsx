@@ -4,7 +4,7 @@ import { ThemeProvider } from "@/components/layout/theme-provider";
 import { ClerkProvider, useAuth } from "@clerk/nextjs";
 import { ConvexReactClient } from "convex/react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
-import { dark } from "@clerk/themes";
+import { dark } from "@clerk/ui/themes";
 import React from "react";
 import { useTheme } from "next-themes";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -37,7 +37,7 @@ function OtherProviders({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider
       appearance={{
-        baseTheme: resolvedTheme === "dark" ? dark : undefined,
+        theme: resolvedTheme === "dark" ? dark : undefined,
       }}
       publishableKey={clientEnv.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
     >
