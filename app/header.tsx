@@ -1,16 +1,9 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
 import { LogIn, MoonIcon, SunIcon } from "lucide-react";
 import { useTheme } from "next-themes";
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  UserButton,
-  useUser,
-} from "@clerk/nextjs";
+import { SignInButton, UserButton, useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { Authenticated, AuthLoading } from "convex/react";
 import Image from "next/image";
@@ -84,7 +77,29 @@ export default function Header() {
                 </>
               )}
             </div>
-            <SignedOut>
+            {isSignedIn ? (
+              <>
+                <Authenticated>
+                  <UserButton showName />
+                </Authenticated>
+                <AuthLoading>Loading...</AuthLoading>
+              </>
+            ) : (
+              <SignInButton
+                forceRedirectUrl="/dashboard/jobs"
+                signUpForceRedirectUrl="/dashboard/jobs"
+                mode="modal"
+              >
+                <Button
+                  className="flex items-center justify-center gap-2"
+                  variant="outline"
+                >
+                  <LogIn className="h-4 w-4" />
+                  Sign In
+                </Button>
+              </SignInButton>
+            )}
+            {/* <SignedOut>
               <SignInButton
                 forceRedirectUrl="/dashboard/jobs"
                 signUpForceRedirectUrl="/dashboard/jobs"
@@ -104,7 +119,7 @@ export default function Header() {
                 <UserButton showName />
               </Authenticated>
               <AuthLoading>Loading...</AuthLoading>
-            </SignedIn>
+            </SignedIn> */}
           </div>
         </div>
       </div>

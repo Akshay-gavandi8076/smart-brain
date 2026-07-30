@@ -14,13 +14,7 @@ import {
   ClipboardPenIcon,
 } from "lucide-react";
 import { useTheme } from "next-themes";
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  UserButton,
-  useUser,
-} from "@clerk/nextjs";
+import { SignInButton, UserButton, useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { Authenticated, AuthLoading } from "convex/react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -109,7 +103,30 @@ export default function MobileHeader() {
 
               <hr className="my-2 w-full border-t" />
 
-              <SignedOut>
+              {isSignedIn ? (
+                <>
+                  <Authenticated>
+                    <UserButton showName />
+                  </Authenticated>
+                  <AuthLoading>Loading...</AuthLoading>
+                </>
+              ) : (
+                <SignInButton
+                  forceRedirectUrl="/dashboard"
+                  signUpForceRedirectUrl="/dashboard"
+                  mode="modal"
+                >
+                  <Button
+                    className="flex items-center justify-center gap-2 font-semibold hover:text-accent-foreground"
+                    variant="outline"
+                  >
+                    <LogIn className="mr-2 h-4 w-4" />
+                    Sign In
+                  </Button>
+                </SignInButton>
+              )}
+
+              {/* <SignedOut>
                 <SignInButton
                   forceRedirectUrl="/dashboard"
                   signUpForceRedirectUrl="/dashboard"
@@ -130,7 +147,7 @@ export default function MobileHeader() {
                   <UserButton showName />
                 </Authenticated>
                 <AuthLoading>Loading...</AuthLoading>
-              </SignedIn>
+              </SignedIn> */}
             </motion.div>
           </motion.div>
         )}
