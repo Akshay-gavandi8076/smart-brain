@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { use, useState, useEffect } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { Id } from "@/convex/_generated/dataModel";
 import { useRouter } from "next/navigation";
@@ -14,8 +14,10 @@ import DocumentDetailSidebar from "./_components/document-detail-sidebar";
 export default function DocumentPage({
   params,
 }: {
-  params: { documentId: Id<"documents"> };
+  params: Promise<{ documentId: Id<"documents"> }>;
 }) {
+  const { documentId } = use(params);
+
   const router = useRouter();
   const { toast } = useToast();
   const [windowHeight, setWindowHeight] = useState(0);
@@ -53,7 +55,7 @@ export default function DocumentPage({
   // Fetch document with loading & error handling
   // -----------------------------
   const document = useQuery(api.documents.getDocument, {
-    documentId: params.documentId,
+    documentId: documentId,
   });
 
   useEffect(() => {
@@ -71,7 +73,7 @@ export default function DocumentPage({
   // Fetch notes with loading & error handling
   // -----------------------------
   const fetchedNotes = useQuery(api.notes.getNotesByDocumentId, {
-    documentId: params.documentId,
+    documentId: documentId,
   });
 
   const deleteNote = useMutation(api.notes.deleteNote);
