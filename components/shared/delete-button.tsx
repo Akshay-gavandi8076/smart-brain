@@ -99,30 +99,29 @@ export function DeleteButton<T>({
               ? `Delete "${entityName}" ${entityType}?`
               : `Delete this ${entityType}?`}
           </AlertDialogTitle>
-          <AlertDialogDescription className="space-y-4">
-            <p>
-              You&apos;re about to permanently delete this{" "}
-              <span className="font-medium text-foreground">
-                {entityName
-                  ? `"${entityName}" ${entityType}`
-                  : `this ${entityType}`}
-              </span>
-              . Please confirm that you want to continue.
-            </p>
 
-            <div className="flex items-start gap-3 rounded-lg border border-destructive/30 bg-destructive/10 p-3">
-              <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
-
-              <div>
-                <p className="font-medium text-destructive">Permanent action</p>
-
-                <p className="mt-1 text-sm text-muted-foreground">
-                  This action cannot be undone. Once deleted, this {entityType}{" "}
-                  and all associated data will be permanently removed.
-                </p>
-              </div>
-            </div>
+          <AlertDialogDescription>
+            You&apos;re about to permanently delete this{" "}
+            <span className="font-medium text-foreground">
+              {entityName
+                ? `"${entityName}" ${entityType}`
+                : `this ${entityType}`}
+            </span>
+            . Please confirm that you want to continue.
           </AlertDialogDescription>
+
+          <div className="mt-4 flex items-start gap-3 rounded-lg border border-destructive/30 bg-destructive/10 p-3">
+            <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
+
+            <div>
+              <p className="font-medium text-destructive">Permanent action</p>
+
+              <p className="mt-1 text-sm text-muted-foreground">
+                This action cannot be undone. Once deleted, this {entityType}{" "}
+                and all associated data will be permanently removed.
+              </p>
+            </div>
+          </div>
         </AlertDialogHeader>
 
         <AlertDialogFooter>

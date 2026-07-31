@@ -10,11 +10,11 @@
 
 import type * as chats from "../chats.js";
 import type * as documents from "../documents.js";
+import type * as helpers_auth from "../helpers/auth.js";
+import type * as helpers_jobs from "../helpers/jobs.js";
+import type * as helpers_openai from "../helpers/openai.js";
+import type * as helpers_tags from "../helpers/tags.js";
 import type * as jobs from "../jobs.js";
-import type * as lib_auth from "../helpers/auth.js";
-import type * as lib_jobs from "../helpers/jobs.js";
-import type * as lib_openai from "../helpers/openai.js";
-import type * as lib_tags from "../helpers/tags.js";
 import type * as notes from "../notes.js";
 import type * as search from "../search.js";
 import type * as tags from "../tags.js";
@@ -28,11 +28,11 @@ import type {
 declare const fullApi: ApiFromModules<{
   chats: typeof chats;
   documents: typeof documents;
+  "helpers/auth": typeof helpers_auth;
+  "helpers/jobs": typeof helpers_jobs;
+  "helpers/openai": typeof helpers_openai;
+  "helpers/tags": typeof helpers_tags;
   jobs: typeof jobs;
-  "lib/auth": typeof lib_auth;
-  "lib/jobs": typeof lib_jobs;
-  "lib/openai": typeof lib_openai;
-  "lib/tags": typeof lib_tags;
   notes: typeof notes;
   search: typeof search;
   tags: typeof tags;
