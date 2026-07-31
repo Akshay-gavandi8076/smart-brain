@@ -1,7 +1,19 @@
-import { FlatCompat } from "@eslint/eslintrc";
+import { defineConfig, globalIgnores } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
 
-const compat = new FlatCompat({
-  baseDirectory: import.meta.dirname,
-});
+export default defineConfig([
+  ...nextVitals,
 
-export default [...compat.extends("next/core-web-vitals")];
+  {
+    rules: {
+      "react-hooks/set-state-in-effect": "off",
+    },
+  },
+
+  globalIgnores([
+    ".next/**",
+    "node_modules/**",
+    "public/**",
+    "convex/_generated/**",
+  ]),
+]);
